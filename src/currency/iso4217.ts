@@ -55,3 +55,17 @@ export const ZAR: Currency = {
   locale: "en-ZA",
 };
 registerCurrency(ZAR);
+
+/**
+ * A collection of common currencies.
+ * @deprecated Use registry instead.
+ */
+export const CURRENCIES: Record<string, Currency> = {
+  USD,
+  EUR,
+  GBP,
+  JPY,
+  ZAR,
+};
+
+
