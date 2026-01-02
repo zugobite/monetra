@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0] - 2026-01-02
+
+### Changed
+
+- **Stable Release**: Promoted version 0.0.3 to 1.0.0.
+- This release marks the first stable version of Monetra, including all features from 0.0.3 (Smart Syntax, MoneyBag, Converter, etc.).
+
 ## [0.0.3] - 2026-01-02
 
 ### Added
@@ -17,6 +24,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Multi-Currency Wallet**: `MoneyBag` class for managing portfolios of multiple currencies.
 - **Serialization**: `toJSON()` method for JSON compatibility.
 - **Enhanced Formatting**: Support for currency codes and names in `format()` (e.g., "USD 10.00").
+
+### Fixed
+
+- Restored `CURRENCIES` export in `iso4217` (deprecated) to maintain backward compatibility.
+- Resolved export conflict between `iso4217` and `registry` for `getCurrency`.
 
 ## [0.0.2] - 2026-01-02
 
