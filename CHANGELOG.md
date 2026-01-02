@@ -5,6 +5,98 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2026-01-02
+
+### Added
+
+#### Core Money Improvements
+
+- `Money.fromCents(amount, currency)` - Alias for `fromMinor` for better discoverability.
+- `Money.fromDecimal(amount, currency)` - Alias for `fromMajor` for better discoverability.
+- `Money.clamp(min, max)` - Clamp a Money value between minimum and maximum bounds.
+- `Money.toDecimalString()` - Returns raw decimal string without locale formatting.
+- `Money.reviver` - Static JSON reviver function for deserializing Money objects.
+
+#### Extended Currency Support
+
+- **60+ ISO 4217 currencies** now included out of the box:
+  - Major: USD, EUR, GBP, JPY, CHF, CAD, AUD, NZD, CNY, HKD, SGD, KRW, INR
+  - European: SEK, NOK, DKK, PLN, CZK, HUF, RON, BGN, HRK, TRY, RUB, UAH, ILS
+  - Americas: MXN, BRL, ARS, CLP, COP, PEN
+  - Africa: ZAR, NGN, KES, EGP, MAD, GHS, TZS, UGX
+  - Asia-Pacific: THB, MYR, IDR, PHP, VND, TWD, PKR, BDT, LKR
+  - Middle East: AED, SAR, QAR, KWD, BHD, OMR, JOD
+  - Special: ISK, MRU
+- Currencies with non-standard decimals properly configured (KWD, BHD, OMR, JOD with 3 decimals; JPY, KRW, VND, CLP, ISK, UGX with 0 decimals)
+
+#### Rounding
+
+- `RoundingMode.TRUNCATE` - Truncate towards zero (removes fractional part).
+
+#### Formatting
+
+- Accounting format support via `{ accounting: true }` option - displays negatives in parentheses.
+- Locale-aware parsing with `parseLocaleString()` and `parseLocaleToMinor()` functions.
+
+#### Error Handling
+
+- Error codes on all error classes (`MonetraErrorCode` enum) for programmatic handling.
+- Extended error properties (e.g., `expected` and `received` on `CurrencyMismatchError`).
+
+#### Financial Math
+
+- `Rate` class - Type-safe abstraction for interest rates and percentages.
+  - `Rate.percent(5)` and `Rate.decimal(0.05)` constructors.
+  - `compoundFactor()`, `periodic()`, `toNominal()`, `toEffective()` methods.
+  - Arithmetic: `add`, `subtract`, `multiply`, `divide`.
+
+#### Converter Enhancements
+
+- Historical exchange rate support via `addHistoricalRate()`.
+- `getRate(currency, date?)` for date-based rate lookups.
+- `setRate(currency, rate)` for updating current rates.
+- `ConvertOptions` with `date` and `rounding` parameters.
+
+#### Ledger Improvements
+
+- Versioned snapshot format (`version: 2` in `LedgerSnapshot`).
+- Browser-compatible crypto using `SubtleCrypto` fallback.
+- Async methods for browser support: `recordAsync`, `verifyAsync`, `snapshotAsync`, `fromSnapshotAsync`.
+- `setHashFunction()` for injecting custom hash implementations.
+
+#### Testing
+
+- Property-based tests using fast-check for arithmetic operations.
+- Tests for commutativity, associativity, identity elements, and serialization round-trips.
+
+### Changed
+
+- **BREAKING**: Ledger `snapshot()` now includes a `version` field.
+- **BREAKING**: `MonetraError` constructor now requires an error code parameter.
+- Ledger verification methods are now async by default in browsers (sync versions still available for Node.js).
+
+### Deprecated
+
+- None
+
+### Removed
+
+- None
+
+### Fixed
+
+- Documentation for financial functions (`pmt`, `futureValue`, `presentValue`) now correctly reflects the implementation signatures using options objects.
+- Removed references to unimplemented functions (`ipmt`, `ppmt`, `addHistoricalRate`) from documentation.
+- Corrected `amortizationSchedule` to `loan` in Cookbook examples.
+- Corrected `wallet.totalIn()` to `wallet.total()` in Cookbook examples.
+- Error message for `RoundingRequiredError` now includes `TRUNCATE` in available modes.
+
+### Security
+
+- Browser-compatible SHA-256 hashing via `SubtleCrypto` API.
+
+---
+
 ## [1.2.0] - 2026-01-02
 
 ### Added

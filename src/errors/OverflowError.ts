@@ -1,7 +1,7 @@
-import { MonetraError } from "./BaseError";
+import { MonetraError, MonetraErrorCode } from "./BaseError";
 
 export class OverflowError extends MonetraError {
   constructor(message: string = "Arithmetic overflow") {
-    super(message);
+    super(message, MonetraErrorCode.OVERFLOW);
   }
 }

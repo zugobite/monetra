@@ -1,7 +1,7 @@
-import { MonetraError } from "./BaseError";
+import { MonetraError, MonetraErrorCode } from "./BaseError";
 
 export class InvalidPrecisionError extends MonetraError {
   constructor(message: string) {
-    super(message);
+    super(message, MonetraErrorCode.INVALID_PRECISION);
   }
 }

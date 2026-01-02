@@ -52,6 +52,19 @@ export class Money {
   }
 
   /**
+   * Alias for `fromMinor`. Creates a Money instance from cents/minor units.
+   *
+   * @param cents - The amount in minor units.
+   * @param currency - The currency of the money (object or code string).
+   * @returns A new Money instance.
+   * @example
+   * const m = Money.fromCents(100, 'USD'); // $1.00
+   */
+  static fromCents(cents: bigint | number, currency: Currency | string): Money {
+    return Money.fromMinor(cents, currency);
+  }
+
+  /**
    * Creates a Money instance from major units (e.g., "10.50").
    *
    * @param amount - The amount as a string. Must be a valid decimal number.
@@ -65,6 +78,20 @@ export class Money {
     const resolvedCurrency = Money.resolveCurrency(currency);
     const minor = parseToMinor(amount, resolvedCurrency);
     return new Money(minor, resolvedCurrency);
+  }
+
+  /**
+   * Alias for `fromMajor`. Creates a Money instance from a decimal string.
+   *
+   * @param amount - The amount as a string (e.g., "10.50").
+   * @param currency - The currency of the money (object or code string).
+   * @returns A new Money instance.
+   * @throws {InvalidPrecisionError} If the amount has more decimal places than the currency allows.
+   * @example
+   * const m = Money.fromDecimal("10.50", 'USD'); // $10.50
+   */
+  static fromDecimal(amount: string, currency: Currency | string): Money {
+    return Money.fromMajor(amount, currency);
   }
 
   /**
@@ -400,6 +427,66 @@ export class Money {
   }
 
   /**
+   * Clamps this Money value between a minimum and maximum.
+   *
+   * @param min - The minimum Money value.
+   * @param max - The maximum Money value.
+   * @returns A new Money instance clamped between min and max.
+   * @throws {CurrencyMismatchError} If currencies don't match.
+   * @throws {Error} If min is greater than max.
+   * @example
+   * const price = Money.fromMajor("150", 'USD');
+   * const clamped = price.clamp(Money.fromMajor("50", 'USD'), Money.fromMajor("100", 'USD'));
+   * // clamped is $100.00
+   */
+  clamp(min: Money, max: Money): Money {
+    assertSameCurrency(this, min);
+    assertSameCurrency(this, max);
+
+    if (min.greaterThan(max)) {
+      throw new Error("Clamp min cannot be greater than max");
+    }
+
+    if (this.lessThan(min)) {
+      return new Money(min.minor, this.currency);
+    }
+    if (this.greaterThan(max)) {
+      return new Money(max.minor, this.currency);
+    }
+    return this;
+  }
+
+  /**
+   * Returns the value as a decimal string without locale formatting.
+   *
+   * This returns a raw decimal representation suitable for storage or calculations,
+   * without any currency symbols, grouping separators, or locale-specific formatting.
+   *
+   * @returns The decimal string representation (e.g., "10.50", "-5.25").
+   * @example
+   * const m = Money.fromMajor("1234.56", 'USD');
+   * m.toDecimalString(); // "1234.56"
+   */
+  toDecimalString(): string {
+    const decimals = this.currency.decimals;
+    const isNegative = this.minor < 0n;
+    const absMinor = isNegative ? -this.minor : this.minor;
+
+    if (decimals === 0) {
+      return isNegative ? `-${absMinor.toString()}` : absMinor.toString();
+    }
+
+    const divisor = 10n ** BigInt(decimals);
+    const integerPart = absMinor / divisor;
+    const fractionalPart = absMinor % divisor;
+
+    const fractionalStr = fractionalPart.toString().padStart(decimals, "0");
+    const result = `${integerPart}.${fractionalStr}`;
+
+    return isNegative ? `-${result}` : result;
+  }
+
+  /**
    * Returns a JSON representation of the Money object.
    *
    * @returns An object with amount (string), currency (code), and precision.
@@ -410,6 +497,36 @@ export class Money {
       currency: this.currency.code,
       precision: this.currency.decimals,
     };
+  }
+
+  /**
+   * JSON reviver function for deserializing Money objects.
+   *
+   * Use with `JSON.parse()` to automatically reconstruct Money instances:
+   *
+   * @param key - The JSON key (unused).
+   * @param value - The parsed JSON value.
+   * @returns A Money instance if value is a serialized Money object, otherwise the original value.
+   * @example
+   * const json = '{"amount": "1050", "currency": "USD", "precision": 2}';
+   * const money = JSON.parse(json, Money.reviver);
+   * // money is Money instance: $10.50
+   */
+  static reviver(key: string, value: unknown): unknown {
+    if (
+      value !== null &&
+      typeof value === "object" &&
+      "amount" in value &&
+      "currency" in value &&
+      "precision" in value &&
+      typeof (value as Record<string, unknown>).amount === "string" &&
+      typeof (value as Record<string, unknown>).currency === "string" &&
+      typeof (value as Record<string, unknown>).precision === "number"
+    ) {
+      const obj = value as { amount: string; currency: string; precision: number };
+      return Money.fromMinor(BigInt(obj.amount), obj.currency);
+    }
+    return value;
   }
 
   /**

@@ -165,23 +165,15 @@ Restores a ledger from a snapshot, verifying integrity.
 
 ## Financial Math
 
-#### `pmt(rate: number, periods: number, presentValue: Money, futureValue?: Money, type?: 0 | 1): Money`
+#### `pmt(options: { annualRate: number; periods: number; principal: Money; periodsPerYear?: number; rounding?: RoundingMode }): Money`
 
 Calculates the payment for a loan based on constant payments and a constant interest rate.
 
-#### `ipmt(rate: number, period: number, periods: number, presentValue: Money, futureValue?: Money, type?: 0 | 1): Money`
-
-Calculates the interest payment for a given period.
-
-#### `ppmt(rate: number, period: number, periods: number, presentValue: Money, futureValue?: Money, type?: 0 | 1): Money`
-
-Calculates the principal payment for a given period.
-
-#### `fv(rate: number, periods: number, presentValue: Money, payment?: Money, type?: 0 | 1): Money`
+#### `futureValue(presentValue: Money, options: { rate: number; years: number; compoundingPerYear?: number; rounding?: RoundingMode }): Money`
 
 Calculates the future value of an investment.
 
-#### `pv(rate: number, periods: number, futureValue: Money, payment?: Money, type?: 0 | 1): Money`
+#### `presentValue(futureValue: Money, options: { rate: number; years: number; compoundingPerYear?: number; rounding?: RoundingMode }): Money`
 
 Calculates the present value of a loan or investment.
 
@@ -241,16 +233,6 @@ Gets the total amount for a specific currency.
 #### `total(targetCurrency: string | Currency, converter: Converter): Money`
 
 Calculates the total value of the bag in the target currency.
-
-Checks if this value is less than the other.
-
-#### `isZero(): boolean`
-
-Returns true if the amount is zero.
-
-#### `isNegative(): boolean`
-
-Returns true if the amount is negative.
 
 ## Currency
 

@@ -57,6 +57,9 @@ export function divideWithRounding(
         }
       }
       return quotient;
+    case RoundingMode.TRUNCATE:
+      // Truncate towards zero (simply return the quotient without adjustment)
+      return quotient;
     default:
       throw new Error(`Unsupported rounding mode: ${mode}`);
   }

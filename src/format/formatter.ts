@@ -23,6 +23,16 @@ export interface FormatOptions {
    * 'name': "1.00 US dollars"
    */
   display?: "symbol" | "code" | "name";
+
+  /**
+   * Whether to use accounting format for negative numbers.
+   * When true, negative values are wrapped in parentheses instead of using a minus sign.
+   * Defaults to false.
+   * @example
+   * // accounting: false (default): "-$1.00"
+   * // accounting: true: "($1.00)"
+   */
+  accounting?: boolean;
 }
 
 /**
@@ -38,10 +48,12 @@ export function format(money: Money, options?: FormatOptions): string {
   const locale = options?.locale || money.currency.locale || "en-US";
   const showSymbol = options?.symbol ?? true;
   const display = options?.display || "symbol";
+  const useAccounting = options?.accounting ?? false;
 
   const decimals = money.currency.decimals;
   const minor = money.minor;
-  const absMinor = minor < 0n ? -minor : minor;
+  const isNegative = minor < 0n;
+  const absMinor = isNegative ? -minor : minor;
 
   const divisor = 10n ** BigInt(decimals);
   const integerPart = absMinor / divisor;
@@ -72,7 +84,10 @@ export function format(money: Money, options?: FormatOptions): string {
       : integerFormatted;
 
   if (!showSymbol) {
-    return minor < 0n ? `-${absString}` : absString;
+    if (isNegative) {
+      return useAccounting ? `(${absString})` : `-${absString}`;
+    }
+    return absString;
   }
 
   // Use formatToParts to get the template (sign position, currency position)
@@ -82,19 +97,32 @@ export function format(money: Money, options?: FormatOptions): string {
       style: "currency",
       currency: money.currency.code,
       currencyDisplay: display,
-    }).formatToParts(minor < 0n ? -1 : 1);
+    }).formatToParts(isNegative ? -1 : 1);
   } catch (e) {
     // Fallback for custom currencies or invalid codes
-    const sign = minor < 0n ? "-" : "";
     const symbol =
       display === "symbol" ? money.currency.symbol : money.currency.code;
-    return `${sign}${symbol}${absString}`;
+    if (isNegative) {
+      return useAccounting
+        ? `(${symbol}${absString})`
+        : `-${symbol}${absString}`;
+    }
+    return `${symbol}${absString}`;
   }
 
   let result = "";
   let numberInserted = false;
+  let hasMinusSign = false;
 
   for (const part of templateParts) {
+    if (part.type === "minusSign") {
+      hasMinusSign = true;
+      // Skip the minus sign, we'll handle it later for accounting format
+      if (!useAccounting) {
+        result += part.value;
+      }
+      continue;
+    }
     if (["integer", "group", "decimal", "fraction"].includes(part.type)) {
       if (!numberInserted) {
         result += absString;
@@ -107,8 +135,13 @@ export function format(money: Money, options?: FormatOptions): string {
         result += part.value;
       }
     } else {
-      result += part.value; // literals, minusSign, parentheses, etc.
+      result += part.value; // literals, parentheses, etc.
     }
+  }
+
+  // Apply accounting format if negative
+  if (useAccounting && isNegative) {
+    return `(${result.trim()})`;
   }
 
   return result;

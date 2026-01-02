@@ -28,6 +28,11 @@ export interface Entry {
 }
 
 export interface LedgerSnapshot {
+  /**
+   * The version of the snapshot format.
+   * Used for migration and compatibility.
+   */
+  version: number;
   entries: Entry[];
   balance: Money;
   currency: string;

@@ -1,4 +1,4 @@
-import { MonetraError } from "./BaseError";
+import { MonetraError, MonetraErrorCode } from "./BaseError";
 
 export class RoundingRequiredError extends MonetraError {
   constructor(operation?: string, result?: number) {
@@ -8,8 +8,8 @@ export class RoundingRequiredError extends MonetraError {
         `Rounding required for ${operation}: result ${result} is not an integer.\n` +
         `💡 Tip: Provide a rounding mode:\n` +
         `   money.${operation}(value, { rounding: RoundingMode.HALF_UP })\n` +
-        `   Available modes: HALF_UP, HALF_DOWN, HALF_EVEN, FLOOR, CEIL`;
+        `   Available modes: HALF_UP, HALF_DOWN, HALF_EVEN, FLOOR, CEIL, TRUNCATE`;
     }
-    super(message);
+    super(message, MonetraErrorCode.ROUNDING_REQUIRED);
   }
 }

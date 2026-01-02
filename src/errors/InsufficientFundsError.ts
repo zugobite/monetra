@@ -1,7 +1,10 @@
-import { MonetraError } from "./BaseError";
+import { MonetraError, MonetraErrorCode } from "./BaseError";
 
 export class InsufficientFundsError extends MonetraError {
-  constructor() {
-    super("Insufficient funds for this operation.");
+  constructor(message?: string) {
+    super(
+      message || "Insufficient funds for this operation.",
+      MonetraErrorCode.INSUFFICIENT_FUNDS
+    );
   }
 }

@@ -32,4 +32,10 @@ export enum RoundingMode {
    * Example: 2.1 -> 3, -2.9 -> -2
    */
   CEIL = "CEIL",
+
+  /**
+   * Truncates towards zero (removes fractional part).
+   * Example: 2.9 -> 2, -2.9 -> -2
+   */
+  TRUNCATE = "TRUNCATE",
 }

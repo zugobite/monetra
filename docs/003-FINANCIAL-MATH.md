@@ -5,8 +5,8 @@ The Financial module provides standard financial formulas for loan amortization,
 ## Installation
 
 ```typescript
-import { pmt, ipmt, ppmt } from "monetra/financial"; // Loan functions
-import { fv, pv } from "monetra/financial"; // TVM functions
+import { pmt } from "monetra/financial"; // Loan functions
+import { futureValue, presentValue } from "monetra/financial"; // TVM functions
 import { npv, irr } from "monetra/financial"; // Investment functions
 ```
 
@@ -24,27 +24,16 @@ import { Money } from "monetra";
 import { USD } from "monetra/currency";
 
 const principal = Money.fromMajor("10000", USD);
-const rate = 0.05 / 12; // Monthly rate (5% annual)
+const rate = 0.05; // 5% annual
 const periods = 36; // 3 years
 
-const monthlyPayment = pmt(rate, periods, principal);
+const monthlyPayment = pmt({
+  annualRate: rate,
+  periods: periods,
+  principal: principal,
+  periodsPerYear: 12
+});
 console.log(monthlyPayment.format()); // "$304.17"
-```
-
-### IPMT (Interest Payment) & PPMT (Principal Payment)
-
-Calculate the interest and principal portions of a specific payment.
-
-```typescript
-import { ipmt, ppmt } from "monetra/financial";
-
-const period = 1; // First payment
-
-const interest = ipmt(rate, period, periods, principal);
-const principalPortion = ppmt(rate, period, periods, principal);
-
-console.log(`Interest: ${interest.format()}`);
-console.log(`Principal: ${principalPortion.format()}`);
 ```
 
 ## Time Value of Money (TVM)
@@ -54,13 +43,16 @@ console.log(`Principal: ${principalPortion.format()}`);
 Calculate the future value of an investment.
 
 ```typescript
-import { fv } from "monetra/financial";
+import { futureValue } from "monetra/financial";
 
 const presentValue = Money.fromMajor("1000", USD);
 const rate = 0.05; // 5%
-const periods = 10; // 10 years
+const years = 10; // 10 years
 
-const futureVal = fv(rate, periods, presentValue);
+const futureVal = futureValue(presentValue, {
+  rate,
+  years
+});
 console.log(futureVal.format()); // "$1,628.89"
 ```
 
@@ -69,10 +61,13 @@ console.log(futureVal.format()); // "$1,628.89"
 Calculate the present value of a future sum.
 
 ```typescript
-import { pv } from "monetra/financial";
+import { presentValue } from "monetra/financial";
 
-const futureValue = Money.fromMajor("10000", USD);
-const presentVal = pv(rate, periods, futureValue);
+const futureVal = Money.fromMajor("10000", USD);
+const presentVal = presentValue(futureVal, {
+  rate: 0.05,
+  years: 10
+});
 ```
 
 ## Investment Analysis

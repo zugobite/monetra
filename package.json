@@ -1,7 +1,7 @@
 {
   "name": "monetra",
-  "version": "1.1.0",
-  "description": "A currency-aware, integer-based money engine designed for financial correctness.",
+  "version": "2.0.0",
+  "description": "A currency-aware, integer-based money engine designed for financial correctness. Zero dependencies, TypeScript-first, auditable ledger support.",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -61,7 +61,8 @@
     "tsup": "^8.0.0",
     "vitest": "^1.0.0",
     "prettier": "^3.0.0",
-    "@types/node": "^20.0.0"
+    "@types/node": "^20.0.0",
+    "fast-check": "^3.15.0"
   },
   "engines": {
     "node": ">=18"
