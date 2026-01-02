@@ -5,15 +5,77 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-01-02
+
+### Added
+
+#### Ledger System (`monetra/ledger`)
+
+- `Ledger` class for recording immutable, cryptographically verifiable transactions.
+- SHA-256 hash chain verification to detect tampering.
+- `record(money, metadata)` method for recording transactions.
+- `getBalance()` method to retrieve current ledger balance.
+- `getHistory()` method for full transaction history.
+- `query(filter)` method for filtering transactions by type, date, reference, or amount.
+- `verify()` method to validate the integrity of the hash chain.
+- `snapshot()` method for exporting ledger state for backup/audit.
+- `Ledger.fromSnapshot()` static method for restoring from a snapshot.
+
+#### Financial Math (`monetra/financial`)
+
+- **Loan Amortization**:
+  - `pmt(rate, periods, presentValue)` - Calculate loan payment amount.
+  - `ipmt(rate, period, periods, presentValue)` - Calculate interest portion of a payment.
+  - `ppmt(rate, period, periods, presentValue)` - Calculate principal portion of a payment.
+- **Time Value of Money**:
+  - `fv(rate, periods, presentValue)` - Calculate future value.
+  - `pv(rate, periods, futureValue)` - Calculate present value.
+- **Investment Analysis**:
+  - `npv(rate, cashFlows)` - Calculate Net Present Value.
+  - `irr(cashFlows)` - Calculate Internal Rate of Return using Newton-Raphson method.
+
+#### Tokens & Crypto (`monetra/tokens`)
+
+- `defineToken(definition)` factory function for creating custom currencies and tokens.
+- High-precision support up to 18 decimals for cryptocurrencies.
+- Built-in token presets: `ETH` (18 decimals), `BTC` (8 decimals), `USDC` (6 decimals), `USDT` (6 decimals).
+- Custom symbol support in formatting (e.g., `Ξ` for ETH, `₿` for BTC).
+- Token metadata: `chainId`, `contractAddress`, `standard`, `coingeckoId`.
+
+### Changed
+
+- Reorganized documentation into logical reading order: Core Concepts → Ledger → Financial → Tokens → API Reference.
+- Updated `package.json` exports to expose new subpaths: `./ledger`, `./financial`, `./tokens`.
+
+### Fixed
+
+- Fixed non-breaking space handling in custom token formatting.
+
 ## [1.1.0] - 2026-01-02
 
 ### Added
 
-- **Arithmetic**: Added `divide()` method with explicit rounding support.
-- **Utilities**: Added `abs()`, `negate()`, `min()`, `max()` methods.
-- **Comparisons**: Added `greaterThanOrEqual()`, `lessThanOrEqual()`, `compare()`, `isPositive()`.
-- **Float Support**: Added `Money.fromFloat()` static method (with precision warnings).
-- **Enhanced Errors**: Improved error messages for `CurrencyMismatchError` and `RoundingRequiredError` with actionable tips.
+#### Money Class Enhancements
+
+- `divide(divisor, options?)` - Divide by a scalar with explicit rounding.
+- `abs()` - Return the absolute value.
+- `negate()` - Return the negated value.
+- `Money.min(...values)` - Static method to get minimum of multiple Money values.
+- `Money.max(...values)` - Static method to get maximum of multiple Money values.
+- `greaterThanOrEqual(other)` - Comparison method.
+- `lessThanOrEqual(other)` - Comparison method.
+- `compare(other)` - Returns `-1`, `0`, or `1` for sorting.
+- `isPositive()` - Check if amount is greater than zero.
+- `Money.fromFloat(amount, currency, options?)` - Create Money from floating-point numbers (with precision warning).
+
+#### Enhanced Error Messages
+
+- `CurrencyMismatchError` now includes actionable tips showing how to use a `Converter`.
+- `RoundingRequiredError` now includes available rounding modes and usage examples.
+
+### Changed
+
+- Improved type definitions for `Money` arithmetic operations to accept `number | string | bigint`.
 
 ## [1.0.1] - 2026-01-02
 

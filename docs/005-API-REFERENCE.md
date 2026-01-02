@@ -133,6 +133,87 @@ Returns the absolute value of this Money.
 
 Returns the negated value of this Money.
 
+## Ledger
+
+#### `constructor(currency: string | Currency)`
+
+Creates a new Ledger for a specific currency.
+
+#### `record(money: Money, metadata: TransactionMetadata): Entry`
+
+Records a transaction. Metadata includes `type`, `description`, `reference`, etc.
+
+#### `getBalance(): Money`
+
+Returns the current balance of the ledger.
+
+#### `getHistory(): ReadonlyArray<Entry>`
+
+Returns the full immutable history of transactions.
+
+#### `verify(): boolean`
+
+Verifies the cryptographic integrity of the hash chain.
+
+#### `snapshot(): LedgerSnapshot`
+
+Exports a snapshot of the ledger state.
+
+#### `static fromSnapshot(snapshot: LedgerSnapshot): Ledger`
+
+Restores a ledger from a snapshot, verifying integrity.
+
+## Financial Math
+
+#### `pmt(rate: number, periods: number, presentValue: Money, futureValue?: Money, type?: 0 | 1): Money`
+
+Calculates the payment for a loan based on constant payments and a constant interest rate.
+
+#### `ipmt(rate: number, period: number, periods: number, presentValue: Money, futureValue?: Money, type?: 0 | 1): Money`
+
+Calculates the interest payment for a given period.
+
+#### `ppmt(rate: number, period: number, periods: number, presentValue: Money, futureValue?: Money, type?: 0 | 1): Money`
+
+Calculates the principal payment for a given period.
+
+#### `fv(rate: number, periods: number, presentValue: Money, payment?: Money, type?: 0 | 1): Money`
+
+Calculates the future value of an investment.
+
+#### `pv(rate: number, periods: number, futureValue: Money, payment?: Money, type?: 0 | 1): Money`
+
+Calculates the present value of a loan or investment.
+
+#### `npv(rate: number, cashFlows: Money[]): Money`
+
+Calculates the Net Present Value of an investment based on a series of cash flows.
+
+#### `irr(cashFlows: Money[], guess?: number): number`
+
+Calculates the Internal Rate of Return for a series of cash flows.
+
+## Tokens
+
+#### `defineToken(definition: TokenDefinition): TokenDefinition`
+
+Defines a custom token or cryptocurrency.
+
+```typescript
+const MY_TOKEN = defineToken({
+  code: "MYT",
+  symbol: "T",
+  decimals: 6
+});
+```
+
+#### Built-in Tokens
+
+- `ETH`: Ethereum (18 decimals)
+- `BTC`: Bitcoin (8 decimals)
+- `USDC`: USD Coin (6 decimals)
+- `USDT`: Tether (6 decimals)
+
 ## Converter
 
 #### `constructor(base: string, rates: Record<string, number>)`
@@ -199,5 +280,5 @@ Strategies for rounding fractional minor units.
 - `CurrencyMismatchError`: Thrown when operating on different currencies.
 - `InvalidPrecisionError`: Thrown when input precision exceeds currency decimals.
 - `RoundingRequiredError`: Thrown when an operation requires rounding but none was provided.
-- `InsufficientFundsError`: (Reserved for future use)
-- `OverflowError`: (Reserved for future use)
+- `InsufficientFundsError`: Thrown when a wallet has insufficient funds.
+- `OverflowError`: Thrown when a value exceeds the safe integer limit.

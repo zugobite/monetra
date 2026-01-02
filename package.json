@@ -10,6 +10,21 @@
       "types": "./dist/index.d.ts",
       "require": "./dist/index.js",
       "import": "./dist/index.mjs"
+    },
+    "./ledger": {
+      "types": "./dist/ledger/index.d.ts",
+      "import": "./dist/ledger/index.mjs",
+      "require": "./dist/ledger/index.js"
+    },
+    "./financial": {
+      "types": "./dist/financial/index.d.ts",
+      "import": "./dist/financial/index.mjs",
+      "require": "./dist/financial/index.js"
+    },
+    "./tokens": {
+      "types": "./dist/tokens/index.d.ts",
+      "import": "./dist/tokens/index.mjs",
+      "require": "./dist/tokens/index.js"
     }
   },
   "scripts": {

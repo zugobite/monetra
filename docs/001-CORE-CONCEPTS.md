@@ -1,4 +1,4 @@
-# Feature Guide
+# Core Concepts
 
 This guide provides an in-depth look at the core features of **Monetra** and how to use them effectively in your applications.
 
@@ -240,4 +240,10 @@ console.log(a.equals(b));      // true
 console.log(a.lessThan(c));    // true
 console.log(c.greaterThan(a)); // true
 console.log(a.isZero());       // false
-````
+```
+
+## Next Steps
+
+Now that you understand the core concepts, explore the specialized modules:
+
+- [Ledger System](002-LEDGER-SYSTEM.md)`

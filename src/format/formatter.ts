@@ -76,11 +76,20 @@ export function format(money: Money, options?: FormatOptions): string {
   }
 
   // Use formatToParts to get the template (sign position, currency position)
-  const templateParts = new Intl.NumberFormat(locale, {
-    style: "currency",
-    currency: money.currency.code,
-    currencyDisplay: display,
-  }).formatToParts(minor < 0n ? -1 : 1);
+  let templateParts: Intl.NumberFormatPart[];
+  try {
+    templateParts = new Intl.NumberFormat(locale, {
+      style: "currency",
+      currency: money.currency.code,
+      currencyDisplay: display,
+    }).formatToParts(minor < 0n ? -1 : 1);
+  } catch (e) {
+    // Fallback for custom currencies or invalid codes
+    const sign = minor < 0n ? "-" : "";
+    const symbol =
+      display === "symbol" ? money.currency.symbol : money.currency.code;
+    return `${sign}${symbol}${absString}`;
+  }
 
   let result = "";
   let numberInserted = false;
@@ -92,7 +101,11 @@ export function format(money: Money, options?: FormatOptions): string {
         numberInserted = true;
       }
     } else if (part.type === "currency") {
-      result += part.value;
+      if (display === "symbol" && money.currency.symbol) {
+        result += money.currency.symbol;
+      } else {
+        result += part.value;
+      }
     } else {
       result += part.value; // literals, minusSign, parentheses, etc.
     }
