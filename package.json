@@ -16,7 +16,8 @@
     "build": "tsup",
     "test": "vitest",
     "lint": "tsc --noEmit",
-    "format": "prettier --write \"src/**/*.ts\""
+    "format": "prettier --write \"src/**/*.ts\"",
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "money",
