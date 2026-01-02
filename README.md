@@ -25,6 +25,7 @@ It is intended for use in wallet-based financial systems where correctness is pa
 - [Documentation](#documentation)
 - [Testing](#testing)
 - [Contributing](#contributing)
+- [Security](#security)
 - [License](#license)
 
 ## Quick Start
@@ -134,6 +135,12 @@ npm run test:coverage
 ## Contributing
 
 Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to get started.
+
+We also have a [Code of Conduct](CODE_OF_CONDUCT.md) that all contributors are expected to follow.
+
+## Security
+
+If you discover a security vulnerability, please review our [Security Policy](SECURITY.md) for instructions on how to report it responsibly.
 
 ## License
 
