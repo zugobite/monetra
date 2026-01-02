@@ -3,7 +3,7 @@ import { getCurrency } from "../currency/registry";
 import { RoundingMode } from "../rounding/strategies";
 
 import { assertSameCurrency } from "./guards";
-import { add, subtract, multiply } from "./arithmetic";
+import { add, subtract, multiply, divide } from "./arithmetic";
 import { allocate } from "./allocation";
 import { parseToMinor } from "../format/parser";
 import { format } from "../format/formatter";
@@ -68,6 +68,69 @@ export class Money {
   }
 
   /**
+   * Creates a Money instance from a floating-point number.
+   *
+   * ⚠️ WARNING: Floating-point numbers can have precision issues.
+   * Prefer `Money.fromMajor("10.50", currency)` for exact values.
+   *
+   * @param amount - The float amount in major units.
+   * @param currency - The currency.
+   * @param options - Options for handling precision.
+   * @returns A new Money instance.
+   */
+  static fromFloat(
+    amount: number,
+    currency: Currency | string,
+    options?: {
+      rounding?: RoundingMode;
+      suppressWarning?: boolean;
+    }
+  ): Money {
+    if (!options?.suppressWarning && process.env.NODE_ENV !== "production") {
+      console.warn(
+        '[monetra] Money.fromFloat() may lose precision. ' +
+          'Consider using Money.fromMajor("' +
+          amount +
+          '", currency) instead.'
+      );
+    }
+    const resolvedCurrency = Money.resolveCurrency(currency);
+    const factor = 10 ** resolvedCurrency.decimals;
+    const minorUnits = Math.round(amount * factor);
+    return new Money(BigInt(minorUnits), resolvedCurrency);
+  }
+
+  /**
+   * Returns the minimum of the provided Money values.
+   * @param values - Money values to compare (must all be same currency).
+   * @returns The Money with the smallest amount.
+   * @throws {CurrencyMismatchError} If currencies don't match.
+   */
+  static min(...values: Money[]): Money {
+    if (values.length === 0)
+      throw new Error("At least one Money value required");
+    return values.reduce((min, current) => {
+      assertSameCurrency(min, current);
+      return current.lessThan(min) ? current : min;
+    });
+  }
+
+  /**
+   * Returns the maximum of the provided Money values.
+   * @param values - Money values to compare (must all be same currency).
+   * @returns The Money with the largest amount.
+   * @throws {CurrencyMismatchError} If currencies don't match.
+   */
+  static max(...values: Money[]): Money {
+    if (values.length === 0)
+      throw new Error("At least one Money value required");
+    return values.reduce((max, current) => {
+      assertSameCurrency(max, current);
+      return current.greaterThan(max) ? current : max;
+    });
+  }
+
+  /**
    * Creates a Money instance representing zero in the given currency.
    *
    * @param currency - The currency.
@@ -127,6 +190,45 @@ export class Money {
   ): Money {
     const result = multiply(this.minor, multiplier, options?.rounding);
     return new Money(result, this.currency);
+  }
+
+  /**
+   * Divides this Money value by a divisor.
+   *
+   * @param divisor - The number to divide by.
+   * @param options - Options for rounding if the result is not an integer.
+   * @returns A new Money instance representing the quotient.
+   * @throws {RoundingRequiredError} If the result is fractional and no rounding mode is provided.
+   * @throws {Error} If divisor is zero.
+   */
+  divide(
+    divisor: number | string,
+    options?: { rounding?: RoundingMode }
+  ): Money {
+    if (divisor === 0 || divisor === "0") {
+      throw new Error("Division by zero");
+    }
+    const result = divide(this.minor, divisor, options?.rounding);
+    return new Money(result, this.currency);
+  }
+
+  /**
+   * Returns the absolute value of this Money.
+   * @returns A new Money instance with the absolute value.
+   */
+  abs(): Money {
+    return new Money(
+      this.minor < 0n ? -this.minor : this.minor,
+      this.currency
+    );
+  }
+
+  /**
+   * Returns the negated value of this Money.
+   * @returns A new Money instance with the negated value.
+   */
+  negate(): Money {
+    return new Money(-this.minor, this.currency);
   }
 
   /**
@@ -195,6 +297,43 @@ export class Money {
     const otherMoney = this.resolveOther(other);
     assertSameCurrency(this, otherMoney);
     return this.minor < otherMoney.minor;
+  }
+
+  /**
+   * Checks if this Money value is greater than or equal to another.
+   */
+  greaterThanOrEqual(other: Money | number | bigint | string): boolean {
+    const otherMoney = this.resolveOther(other);
+    assertSameCurrency(this, otherMoney);
+    return this.minor >= otherMoney.minor;
+  }
+
+  /**
+   * Checks if this Money value is less than or equal to another.
+   */
+  lessThanOrEqual(other: Money | number | bigint | string): boolean {
+    const otherMoney = this.resolveOther(other);
+    assertSameCurrency(this, otherMoney);
+    return this.minor <= otherMoney.minor;
+  }
+
+  /**
+   * Checks if this Money value is positive (greater than zero).
+   */
+  isPositive(): boolean {
+    return this.minor > 0n;
+  }
+
+  /**
+   * Compares this Money to another, returning -1, 0, or 1.
+   * Useful for sorting.
+   */
+  compare(other: Money | number | bigint | string): -1 | 0 | 1 {
+    const otherMoney = this.resolveOther(other);
+    assertSameCurrency(this, otherMoney);
+    if (this.minor < otherMoney.minor) return -1;
+    if (this.minor > otherMoney.minor) return 1;
+    return 0;
   }
 
   /**

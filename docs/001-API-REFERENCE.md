@@ -26,9 +26,22 @@ Creates a Money instance from minor units (e.g., cents).
 
 Creates a Money instance from major units (e.g., "10.50"). Throws if precision exceeds currency decimals.
 
+#### `Money.fromFloat(amount: number, currency: Currency | string, options?: { rounding?: RoundingMode; suppressWarning?: boolean }): Money`
+
+Creates a Money instance from a floating-point number.
+**Warning:** Floating-point numbers can have precision issues. Prefer `Money.fromMajor` for exact values.
+
 #### `Money.zero(currency: Currency | string): Money`
 
 Creates a zero value for the given currency.
+
+#### `Money.min(...values: Money[]): Money`
+
+Returns the minimum of the provided Money values. All values must be in the same currency.
+
+#### `Money.max(...values: Money[]): Money`
+
+Returns the maximum of the provided Money values. All values must be in the same currency.
 
 ### Instance Methods
 
@@ -43,6 +56,10 @@ Subtracts another value. Accepts Money objects, numbers (minor units), or string
 #### `multiply(multiplier: string | number, options?: { rounding?: RoundingMode }): Money`
 
 Multiplies by a scalar. Requires `rounding` option if the result is not an integer.
+
+#### `divide(divisor: string | number, options?: { rounding?: RoundingMode }): Money`
+
+Divides by a scalar. Requires `rounding` option if the result is not an integer. Throws on division by zero.
 
 #### `percentage(percent: number, rounding?: RoundingMode): Money`
 
@@ -83,6 +100,38 @@ Checks if this value is greater than the other.
 #### `lessThan(other: Money | number | bigint | string): boolean`
 
 Checks if this value is less than the other.
+
+#### `greaterThanOrEqual(other: Money | number | bigint | string): boolean`
+
+Checks if this value is greater than or equal to the other.
+
+#### `lessThanOrEqual(other: Money | number | bigint | string): boolean`
+
+Checks if this value is less than or equal to the other.
+
+#### `compare(other: Money | number | bigint | string): -1 | 0 | 1`
+
+Compares this Money to another. Returns -1 if less, 0 if equal, 1 if greater.
+
+#### `isPositive(): boolean`
+
+Checks if the amount is greater than zero.
+
+#### `isNegative(): boolean`
+
+Checks if the amount is less than zero.
+
+#### `isZero(): boolean`
+
+Checks if the amount is zero.
+
+#### `abs(): Money`
+
+Returns the absolute value of this Money.
+
+#### `negate(): Money`
+
+Returns the negated value of this Money.
 
 ## Converter
 

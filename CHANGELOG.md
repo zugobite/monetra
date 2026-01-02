@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-01-02
+
+### Added
+
+- **Arithmetic**: Added `divide()` method with explicit rounding support.
+- **Utilities**: Added `abs()`, `negate()`, `min()`, `max()` methods.
+- **Comparisons**: Added `greaterThanOrEqual()`, `lessThanOrEqual()`, `compare()`, `isPositive()`.
+- **Float Support**: Added `Money.fromFloat()` static method (with precision warnings).
+- **Enhanced Errors**: Improved error messages for `CurrencyMismatchError` and `RoundingRequiredError` with actionable tips.
+
 ## [1.0.1] - 2026-01-02
 
 ### Fixed

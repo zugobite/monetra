@@ -44,10 +44,45 @@ export function multiply(
   }
 
   if (!rounding) {
-    throw new RoundingRequiredError();
+    throw new RoundingRequiredError(
+      "multiply",
+      Number(product) / Number(denominator)
+    );
   }
 
   return divideWithRounding(product, denominator, rounding);
+}
+
+/**
+ * Divides a BigInt amount by a divisor.
+ *
+ * @param amount - The amount to divide.
+ * @param divisor - The divisor (number or string).
+ * @param rounding - Optional rounding mode.
+ * @returns The result as a BigInt.
+ * @throws {RoundingRequiredError} If rounding is needed but not provided.
+ */
+export function divide(
+  amount: bigint,
+  divisor: string | number,
+  rounding?: RoundingMode
+): bigint {
+  const { numerator, denominator } = parseMultiplier(divisor);
+
+  // result = amount / (numerator / denominator)
+  // result = (amount * denominator) / numerator
+
+  const product = amount * denominator;
+
+  if (product % numerator === 0n) {
+    return product / numerator;
+  }
+
+  if (!rounding) {
+    throw new RoundingRequiredError("divide", Number(product) / Number(numerator));
+  }
+
+  return divideWithRounding(product, numerator, rounding);
 }
 
 function parseMultiplier(multiplier: string | number): {
