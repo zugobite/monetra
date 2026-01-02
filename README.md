@@ -20,6 +20,9 @@ It is intended for use in wallet-based financial systems where correctness is pa
 - ✅ **Multi-Currency Wallets**: Built-in `MoneyBag` for managing portfolios.
 - ✅ **Currency Conversion**: Robust `Converter` with exchange rate support.
 - ✅ **Financial Primitives**: Helpers for tax, discounts, and splitting.
+- ✅ **Ledger System**: Immutable, cryptographically verifiable transaction history.
+- ✅ **Financial Math**: Standard formulas for loans (PMT), TVM (FV/PV), and Investment (NPV/IRR).
+- ✅ **Crypto & Tokens**: Support for high-precision tokens (18 decimals) and custom currencies.
 
 ## Table of Contents
 
@@ -111,8 +114,11 @@ const [part1, part2, part3] = pot.allocate([1, 1, 1]);
 
 For more detailed information, please refer to the documentation in the `docs` folder:
 
-- [API Reference](docs/001-API-REFERENCE.md)
-- [Feature Guide](docs/002-FEATURE-GUIDE.md)
+1. [Core Concepts](docs/001-CORE-CONCEPTS.md)
+2. [Ledger System](docs/002-LEDGER-SYSTEM.md)
+3. [Financial Math](docs/003-FINANCIAL-MATH.md)
+4. [Tokens & Crypto](docs/004-TOKENS-AND-CRYPTO.md)
+5. [API Reference](docs/005-API-REFERENCE.md)
 
 ## Testing
 

@@ -1,4 +1,4 @@
-# Feature Guide
+# Core Concepts
 
 This guide provides an in-depth look at the core features of **Monetra** and how to use them effectively in your applications.
 
@@ -40,6 +40,23 @@ const final = withTax.subtractPercent(20); // $88.00
 // Split into 3 equal payments
 const payments = final.split(3);
 // [ $29.34, $29.33, $29.33 ] - Handles penny rounding automatically
+```
+
+### Comparison & Utilities
+
+Monetra provides a rich set of comparison and utility methods.
+
+```typescript
+const a = money("10.00", "USD");
+const b = money("20.00", "USD");
+
+a.lessThan(b); // true
+a.greaterThanOrEqual("10.00"); // true
+a.compare(b); // -1
+
+const debt = money("-50.00", "USD");
+debt.abs(); // $50.00
+debt.isPositive(); // false
 ```
 
 ### Error Handling
@@ -94,6 +111,15 @@ If the result is an exact integer, rounding is not required.
 const price = Money.fromMajor("10.00", USD);
 const quantity = 2;
 const total = price.multiply(quantity); // $20.00 (No rounding needed)
+```
+
+### Division
+
+Division works similarly to multiplication. You must provide a rounding mode if the result is not an integer.
+
+```typescript
+const total = money("10.00", "USD");
+const perPerson = total.divide(3, { rounding: RoundingMode.HALF_UP }); // $3.33
 ```
 
 ## 3. Allocation (Splitting Money)
@@ -214,4 +240,10 @@ console.log(a.equals(b));      // true
 console.log(a.lessThan(c));    // true
 console.log(c.greaterThan(a)); // true
 console.log(a.isZero());       // false
-````
+```
+
+## Next Steps
+
+Now that you understand the core concepts, explore the specialized modules:
+
+- [Ledger System](002-LEDGER-SYSTEM.md)`
