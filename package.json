@@ -25,11 +25,18 @@
     "integer",
     "typescript"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zugobite/monetra.git"
+  },
+  "bugs": {
+    "url": "https://github.com/zugobite/monetra/issues"
+  },
+  "homepage": "https://github.com/zugobite/monetra#readme",
   "files": [
     "dist",
     "README.md",
-    "LICENSE",
-    "SPEC.md"
+    "LICENSE"
   ],
   "author": "",
   "license": "MIT",
