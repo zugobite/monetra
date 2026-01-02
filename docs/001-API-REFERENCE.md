@@ -1,52 +1,116 @@
 # API Reference
 
+## Global Helpers
+
+#### `money(amount: number | bigint | string, currency: string | Currency): Money`
+
+Helper function to create Money instances.
+
+- If `amount` is a number/bigint, it is treated as minor units (cents).
+- If `amount` is a string, it is treated as major units (dollars).
+
+```typescript
+money(100, "USD"); // $1.00
+money("10.50", "USD"); // $10.50
+```
+
 ## Money
 
 ### Static Methods
 
-#### `Money.fromMinor(minor: bigint | number, currency: Currency): Money`
+#### `Money.fromMinor(minor: bigint | number, currency: Currency | string): Money`
 
 Creates a Money instance from minor units (e.g., cents).
 
-#### `Money.fromMajor(amount: string, currency: Currency): Money`
+#### `Money.fromMajor(amount: string, currency: Currency | string): Money`
 
 Creates a Money instance from major units (e.g., "10.50"). Throws if precision exceeds currency decimals.
 
-#### `Money.zero(currency: Currency): Money`
+#### `Money.zero(currency: Currency | string): Money`
 
 Creates a zero value for the given currency.
 
 ### Instance Methods
 
-#### `add(other: Money): Money`
+#### `add(other: Money | number | bigint | string): Money`
 
-Adds another Money value. Throws `CurrencyMismatchError` if currencies differ.
+Adds another value. Accepts Money objects, numbers (minor units), or strings (major units).
 
-#### `subtract(other: Money): Money`
+#### `subtract(other: Money | number | bigint | string): Money`
 
-Subtracts another Money value. Throws `CurrencyMismatchError` if currencies differ.
+Subtracts another value. Accepts Money objects, numbers (minor units), or strings (major units).
 
 #### `multiply(multiplier: string | number, options?: { rounding?: RoundingMode }): Money`
 
 Multiplies by a scalar. Requires `rounding` option if the result is not an integer.
 
+#### `percentage(percent: number, rounding?: RoundingMode): Money`
+
+Calculates a percentage of the amount.
+
+#### `addPercent(percent: number, rounding?: RoundingMode): Money`
+
+Adds a percentage to the amount (e.g., adding tax).
+
+#### `subtractPercent(percent: number, rounding?: RoundingMode): Money`
+
+Subtracts a percentage from the amount (e.g., discount).
+
+#### `split(parts: number): Money[]`
+
+Splits the money into equal parts, distributing remainders.
+
 #### `allocate(ratios: number[]): Money[]`
 
 Splits the money according to the given ratios. Distributes remainders to ensure the sum equals the original amount.
 
-#### `format(options?: { locale?: string; symbol?: boolean }): string`
+#### `format(options?: { locale?: string; symbol?: boolean; display?: 'symbol' | 'code' | 'name' }): string`
 
 Formats the money as a string using `Intl.NumberFormat`.
 
-#### `equals(other: Money): boolean`
+#### `toJSON(): { amount: string; currency: string; precision: number }`
+
+Returns a JSON-serializable representation.
+
+#### `equals(other: Money | number | bigint | string): boolean`
 
 Checks if two Money values are equal in amount and currency.
 
-#### `greaterThan(other: Money): boolean`
+#### `greaterThan(other: Money | number | bigint | string): boolean`
 
 Checks if this value is greater than the other.
 
-#### `lessThan(other: Money): boolean`
+#### `lessThan(other: Money | number | bigint | string): boolean`
+
+Checks if this value is less than the other.
+
+## Converter
+
+#### `constructor(base: string, rates: Record<string, number>)`
+
+Creates a new converter with a base currency and exchange rates.
+
+#### `convert(money: Money, toCurrency: string | Currency): Money`
+
+Converts a Money object to the target currency.
+
+## MoneyBag (Portfolio)
+
+#### `add(money: Money): void`
+
+Adds money to the bag.
+
+#### `subtract(money: Money): void`
+
+Subtracts money from the bag.
+
+#### `get(currency: string | Currency): Money`
+
+Gets the total amount for a specific currency.
+
+#### `total(targetCurrency: string | Currency, converter: Converter): Money`
+
+Calculates the total value of the bag in the target currency.
 
 Checks if this value is less than the other.
 

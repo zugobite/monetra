@@ -1,6 +1,6 @@
 /**
  * Represents a currency with its metadata.
- * 
+ *
  * This interface defines the structure for currency objects used throughout the library.
  * It includes the ISO 4217 code, the number of decimal places (precision),
  * the currency symbol, and an optional default locale for formatting.

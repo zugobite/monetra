@@ -1,6 +1,6 @@
-import { RoundingMode } from './strategies';
+import { RoundingMode } from "./strategies";
 
-export * from './strategies';
+export * from "./strategies";
 
 export function divideWithRounding(
   numerator: bigint,
@@ -8,7 +8,7 @@ export function divideWithRounding(
   mode: RoundingMode
 ): bigint {
   if (denominator === 0n) {
-    throw new Error('Division by zero');
+    throw new Error("Division by zero");
   }
 
   const quotient = numerator / denominator;
@@ -53,7 +53,7 @@ export function divideWithRounding(
         // If quotient is odd, round up (away from zero? no, to nearest even).
         // If quotient is even, keep it.
         if (quotient % 2n !== 0n) {
-           return sign > 0n ? quotient + 1n : quotient - 1n;
+          return sign > 0n ? quotient + 1n : quotient - 1n;
         }
       }
       return quotient;

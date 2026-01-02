@@ -10,14 +10,36 @@ Monetra uses `BigInt` internally to represent all monetary values in their minor
 
 Addition and subtraction are straightforward but strict. You cannot operate on Money objects of different currencies.
 
+We provide a smart syntax that allows you to pass numbers (minor units) or strings (major units) directly to arithmetic methods.
+
 ```typescript
-import { Money, USD } from 'monetra';
+import { money } from "monetra";
 
-const price = Money.fromMajor('19.99', USD);
-const shipping = Money.fromMajor('5.00', USD);
+const price = money("19.99", "USD");
 
-const total = price.add(shipping); // $24.99
-const discount = total.subtract(Money.fromMajor('2.00', USD)); // $22.99
+// Add $5.00 (using string for major units)
+const total = price.add("5.00"); // $24.99
+
+// Subtract 200 cents ($2.00) (using number for minor units)
+const discount = total.subtract(200); // $22.99
+```
+
+### Financial Helpers
+
+Monetra includes built-in helpers for common financial tasks like tax, discounts, and splitting bills.
+
+```typescript
+const subtotal = money("100.00", "USD");
+
+// Add 10% Tax
+const withTax = subtotal.addPercent(10); // $110.00
+
+// Apply 20% Discount
+const final = withTax.subtractPercent(20); // $88.00
+
+// Split into 3 equal payments
+const payments = final.split(3);
+// [ $29.34, $29.33, $29.33 ] - Handles penny rounding automatically
 ```
 
 ### Error Handling
@@ -25,10 +47,10 @@ const discount = total.subtract(Money.fromMajor('2.00', USD)); // $22.99
 If you try to add or subtract different currencies, Monetra will throw a `CurrencyMismatchError`.
 
 ```typescript
-import { Money, USD, EUR } from 'monetra';
+import { money } from "monetra";
 
-const dollars = Money.fromMajor('10.00', USD);
-const euros = Money.fromMajor('10.00', EUR);
+const dollars = money("10.00", "USD");
+const euros = money("10.00", "EUR");
 
 try {
   dollars.add(euros); // Throws CurrencyMismatchError
@@ -54,9 +76,9 @@ We support several rounding strategies via the `RoundingMode` enum:
 ### Example: Tax Calculation
 
 ```typescript
-import { Money, USD, RoundingMode } from 'monetra';
+import { Money, USD, RoundingMode } from "monetra";
 
-const price = Money.fromMajor('10.25', USD); // 1025 cents
+const price = Money.fromMajor("10.25", USD); // 1025 cents
 const taxRate = 0.0825; // 8.25%
 
 // 1025 * 0.0825 = 84.5625 cents
@@ -69,7 +91,7 @@ const tax = price.multiply(taxRate, { rounding: RoundingMode.HALF_UP });
 If the result is an exact integer, rounding is not required.
 
 ```typescript
-const price = Money.fromMajor('10.00', USD);
+const price = Money.fromMajor("10.00", USD);
 const quantity = 2;
 const total = price.multiply(quantity); // $20.00 (No rounding needed)
 ```
@@ -82,9 +104,9 @@ Monetra's `allocate` method ensures that not a single cent is lost or created. I
 ### Example: Splitting a Bill
 
 ```typescript
-import { Money, USD } from 'monetra';
+import { Money, USD } from "monetra";
 
-const bill = Money.fromMajor('100.00', USD);
+const bill = Money.fromMajor("100.00", USD);
 const [personA, personB, personC] = bill.allocate([1, 1, 1]);
 
 console.log(personA.format()); // "$33.34"
@@ -99,11 +121,11 @@ console.log(personC.format()); // "$33.33"
 You can also allocate by unequal ratios.
 
 ```typescript
-const profit = Money.fromMajor('1000.00', USD);
+const profit = Money.fromMajor("1000.00", USD);
 // Split 70% / 30%
 const [owner, partner] = profit.allocate([70, 30]);
 
-console.log(owner.format());   // "$700.00"
+console.log(owner.format()); // "$700.00"
 console.log(partner.format()); // "$300.00"
 ```
 
@@ -113,27 +135,71 @@ Monetra leverages the standard `Intl.NumberFormat` API for robust, locale-aware 
 
 ### Parsing
 
-Always use `Money.fromMajor` for user input (strings) and `Money.fromMinor` for database values (integers).
+Always use `Money.fromMajor` (or `money('...')`) for user input (strings) and `Money.fromMinor` (or `money(123)`) for database values (integers).
 
 ```typescript
 // Safe parsing
-const m1 = Money.fromMajor('1,234.56', USD); // Error! No commas allowed in parsing for safety.
-const m2 = Money.fromMajor('1234.56', USD);  // OK
+const m1 = Money.fromMajor("1,234.56", USD); // Error! No commas allowed in parsing for safety.
+const m2 = Money.fromMajor("1234.56", USD); // OK
 ```
 
 ### Formatting
 
-You can format money for any locale, regardless of the currency.
+You can format money for any locale, regardless of the currency. You can also control the display style.
 
 ```typescript
-const m = Money.fromMajor('1234.56', USD);
+const m = money("1234.56", "USD");
+
+// Default
+console.log(m.format()); // "$1,234.56"
+
+// With Currency Code
+console.log(m.format({ display: "code" })); // "USD 1,234.56"
+
+// With Currency Name
+console.log(m.format({ display: "name" })); // "1,234.56 US dollars"
+```
+
+## 5. Multi-Currency Wallets & Conversion
+
+For advanced use cases like wallets, Monetra provides `MoneyBag` and `Converter`.
+
+### MoneyBag (Portfolio)
+
+A `MoneyBag` holds multiple currencies and handles adding/subtracting them automatically.
+
+```typescript
+import { MoneyBag, money } from "monetra";
+
+const wallet = new MoneyBag();
+wallet.add(money("10.00", "USD"));
+wallet.add(money("5.00", "EUR"));
+
+console.log(wallet.get("USD").format()); // "$10.00"
+```
+
+### Currency Conversion
+
+To get the total value of a mixed wallet, you need a `Converter`.
+
+```typescript
+import { Converter } from "monetra";
+
+const rates = { USD: 1, EUR: 0.85 }; // 1 USD = 0.85 EUR
+const converter = new Converter("USD", rates);
+
+// Convert EUR to USD
+const totalUSD = wallet.total("USD", converter);
+console.log(totalUSD.format()); // "$15.88" (approx)
+```
 
 // Default (uses currency's default locale, en-US for USD)
 console.log(m.format()); // "$1,234.56"
 
 // German locale (uses comma for decimals)
 console.log(m.format({ locale: 'de-DE' })); // "1.234,56 $"
-```
+
+````
 
 ## 5. Comparison
 
@@ -148,4 +214,4 @@ console.log(a.equals(b));      // true
 console.log(a.lessThan(c));    // true
 console.log(c.greaterThan(a)); // true
 console.log(a.isZero());       // false
-```
+````

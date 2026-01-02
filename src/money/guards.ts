@@ -1,5 +1,5 @@
-import { Money } from './Money';
-import { CurrencyMismatchError, InsufficientFundsError } from '../errors';
+import { Money } from "./Money";
+import { CurrencyMismatchError, InsufficientFundsError } from "../errors";
 
 export function assertSameCurrency(a: Money, b: Money): void {
   if (a.currency.code !== b.currency.code) {
@@ -16,6 +16,6 @@ export function assertNonNegative(money: Money): void {
     // "Any violation is considered a bug" -> maybe just Error?
     // But for "InsufficientFunds", that's usually when subtracting.
     // Let's use a generic Error for now or create a specific one if needed.
-    throw new Error('Money value must be non-negative');
+    throw new Error("Money value must be non-negative");
   }
 }

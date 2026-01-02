@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.3] - 2026-01-02
+
+### Added
+
+- **Smart Syntax**: `money()` helper function for easier instantiation.
+- **Smart Arithmetic**: `add`, `subtract`, `equals`, `greaterThan`, `lessThan` now accept numbers (minor units) and strings (major units) directly.
+- **Financial Helpers**: `percentage`, `addPercent`, `subtractPercent`, and `split` methods for common financial operations.
+- **Currency Registry**: Global registry for looking up currencies by string code (e.g., 'USD').
+- **Currency Conversion**: `Converter` class for handling exchange rates and conversions.
+- **Multi-Currency Wallet**: `MoneyBag` class for managing portfolios of multiple currencies.
+- **Serialization**: `toJSON()` method for JSON compatibility.
+- **Enhanced Formatting**: Support for currency codes and names in `format()` (e.g., "USD 10.00").
+
 ## [0.0.2] - 2026-01-02
 
 ### Added

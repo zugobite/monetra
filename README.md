@@ -16,6 +16,10 @@ It is intended for use in wallet-based financial systems where correctness is pa
 - ✅ **Immutable**: All operations return new objects.
 - ✅ **Locale-aware formatting**: Built on `Intl` standards.
 - ✅ **Allocation Engine**: Deterministic splitting of funds (e.g., 33% / 33% / 34%).
+- ✅ **Smart Syntax**: Intuitive API that accepts numbers and strings directly.
+- ✅ **Multi-Currency Wallets**: Built-in `MoneyBag` for managing portfolios.
+- ✅ **Currency Conversion**: Robust `Converter` with exchange rate support.
+- ✅ **Financial Primitives**: Helpers for tax, discounts, and splitting.
 
 ## Table of Contents
 
@@ -43,24 +47,17 @@ pnpm add monetra
 ### Basic Usage
 
 ```typescript
-import { Money, USD, RoundingMode } from "monetra";
+import { money, USD } from "monetra";
 
-// Create money from major units (e.g., "10.50")
-const price = Money.fromMajor("10.50", USD);
+// Create money easily
+const price = money("10.50", "USD"); // $10.50
+const tax = price.percentage(10); // $1.05
 
-// Create money from minor units (e.g., 100 cents)
-const tax = Money.fromMinor(100, USD); // $1.00
+// Smart arithmetic
+const total = price.add(tax); // $11.55
+const discounted = total.subtract("2.00"); // $9.55
 
-// Arithmetic
-const total = price.add(tax); // $11.50
-
-// Formatting
-console.log(total.format()); // "$11.50"
-console.log(total.format({ locale: "de-DE" })); // "11,50 $"
-
-// Multiplication with explicit rounding
-const discount = total.multiply(0.15, { rounding: RoundingMode.HALF_UP });
-const finalPrice = total.subtract(discount);
+console.log(discounted.format()); // "$9.55"
 ```
 
 ## Core Concepts
