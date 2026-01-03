@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Project Management Workflow**: Integrated GitHub Projects for roadmap and issue tracking.
 - Comprehensive developer documentation with framework-specific examples
 - New documentation structure in `docs/` directory:
   - Getting Started guide with installation and quick start
