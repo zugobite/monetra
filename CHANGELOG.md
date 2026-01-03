@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2026-01-03
+
+### Added
+
+- Comprehensive developer documentation with framework-specific examples
+- New documentation structure in `docs/` directory:
+  - Getting Started guide with installation and quick start
+  - Core Concepts explaining integer arithmetic, immutability, and rounding
+  - API Reference for Money, Ledger, Financial functions, and Currency/Tokens
+  - Guides for allocation, formatting, custom tokens, and error handling
+  - Framework examples for React.js, Vue.js, and Node.js
+  - Best practices with patterns, anti-patterns, and performance tips
+  - Library comparison with Dinero.js, currency.js, big.js, and decimal.js
+
+### Changed
+
+- Restructured documentation from numbered files to organized directory structure
+- Updated README.md with cleaner, more professional format
+- Simplified README.md feature descriptions and API summary tables
+
+### Removed
+
+- Old documentation files (000-INTRODUCTION.md through 007-COOKBOOK.md)
+
+---
+
 ## [2.0.0] - 2026-01-02
 
 ### Added

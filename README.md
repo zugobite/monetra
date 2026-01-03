@@ -1,245 +1,284 @@
 # Monetra
 
-**The money library that makes financial correctness impossible to get wrong.**
-
-Monetra is a TypeScript-first, zero-dependency money engine built for applications where every cent matters. It eliminates floating-point errors, enforces explicit rounding, and provides built-in audit trails—making it ideal for fintech, e-commerce, accounting, and cryptocurrency applications.
+A TypeScript library for handling monetary values with precision.
 
 [![npm version](https://img.shields.io/npm/v/monetra.svg)](https://www.npmjs.com/package/monetra)
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![TypeScript](https://img.shields.io/badge/language-TypeScript-blue.svg)
-![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen.svg)
-![Zero Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen.svg)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
+[![Zero Dependencies](https://img.shields.io/badge/Dependencies-0-brightgreen.svg)]()
 
-## Why Monetra?
+---
 
-```javascript
-// ❌ Regular JavaScript
-0.1 + 0.2 === 0.3  // false! (0.30000000000000004)
+## Overview
 
-// ✅ Monetra
-Money.fromDecimal('0.10', 'USD').add('0.20').equals('0.30')  // true
+Monetra is a zero-dependency TypeScript library that handles monetary values using integer arithmetic. By storing amounts in minor units (cents, satoshis, wei) as `BigInt`, it avoids the floating-point precision errors inherent in JavaScript's `number` type.
+
+```typescript
+// JavaScript floating-point issue
+0.1 + 0.2 === 0.3; // false (0.30000000000000004)
+
+// Monetra
+import { money } from "monetra";
+money("0.10", "USD").add("0.20").equals(money("0.30", "USD")); // true
 ```
 
-### The Problem
+---
 
-Most programming languages store decimals as floating-point numbers, leading to tiny precision errors that compound over millions of transactions. These errors cause audit failures, reconciliation nightmares, and lost customer trust.
-
-### The Solution
-
-Monetra stores all values as integers (cents, satoshis, wei) using BigInt, eliminating floating-point errors entirely. When rounding is necessary, you explicitly choose how—no hidden surprises.
-
-## Features
-
-| Feature | Description |
-|---------|-------------|
-| 🔢 **Integer-Based** | All values stored in minor units (BigInt). No floats, ever. |
-| 🎯 **Explicit Rounding** | 6 rounding modes. You choose when and how. |
-| 🌍 **Multi-Currency** | ISO 4217 currencies + custom tokens + crypto (18 decimals) |
-| 📊 **Financial Math** | Loan payments, NPV, IRR, amortization schedules |
-| 📝 **Audit Ledger** | Tamper-evident transaction history with SHA-256 hashing |
-| 🔄 **Currency Conversion** | Rate management with historical lookups |
-| 💼 **Wallet/MoneyBag** | Multi-currency portfolio management |
-| ⚡ **Zero Dependencies** | Nothing to audit, nothing to break |
-| 🌐 **Runs Everywhere** | Node.js, browsers, serverless, edge functions |
-
-## Table of Contents
-
-- [Quick Start](#quick-start)
-- [Core Concepts](#core-concepts)
-- [Usage Examples](#usage-examples)
-- [What's New in v2.0](#whats-new-in-v20)
-- [Documentation](#documentation)
-- [Testing](#testing)
-- [Contributing](#contributing)
-- [Security](#security)
-- [License](#license)
-
-## Quick Start
-
-### Installation
+## Installation
 
 ```bash
 npm install monetra
-# or
+```
+
+```bash
 yarn add monetra
-# or
+```
+
+```bash
 pnpm add monetra
 ```
+
+**Requirements:** Node.js 18+ or modern browsers with BigInt support.
+
+---
+
+## Features
+
+- **Integer-based storage** - All values stored as `BigInt` in minor units
+- **Explicit rounding** - Six rounding modes (HALF_UP, HALF_DOWN, HALF_EVEN, FLOOR, CEIL, TRUNCATE)
+- **Currency support** - ISO 4217 currencies with automatic precision handling
+- **Custom tokens** - Define cryptocurrencies and tokens with up to 18 decimal places
+- **Allocation** - Split amounts without losing cents
+- **Financial calculations** - Compound interest, loan amortization, NPV, IRR
+- **Ledger** - Append-only transaction log with hash chain verification
+- **Currency conversion** - Rate management with historical lookups
+- **Multi-currency** - MoneyBag for aggregating different currencies
+- **Immutable** - All operations return new instances
+- **Type-safe** - Full TypeScript support with strict types
+
+---
+
+## Quick Start
 
 ### Basic Usage
 
 ```typescript
-import { money, USD } from "monetra";
+import { money, Money, RoundingMode } from "monetra";
 
-// Create money easily
-const price = money("10.50", "USD"); // $10.50
-const tax = price.percentage(10); // $1.05
+// Create money from string (major units)
+const price = money("19.99", "USD");
 
-// Smart arithmetic
-const total = price.add(tax); // $11.55
-const discounted = total.subtract("2.00"); // $9.55
+// Create from minor units (cents)
+const tax = Money.fromMinor(199, "USD");
 
-console.log(discounted.format()); // "$9.55"
+// Arithmetic
+const subtotal = price.add(tax);
+const total = subtotal.multiply(2);
+
+// Formatting
+console.log(total.format()); // "$43.96"
+console.log(total.format({ locale: "de-DE" })); // "43,96 $"
 ```
 
-## Core Concepts
+### Allocation
 
-### Integer-Only Representation
-
-Monetra stores all values in minor units (e.g., cents) using `BigInt`. This avoids the precision errors common with floating-point math.
-
-- `$10.50` is stored as `1050n`.
-- `¥100` is stored as `100n`.
-
-### Immutability
-
-Money objects are immutable. Operations like `add` or `multiply` return new instances.
+Split money without losing cents:
 
 ```typescript
-const a = Money.fromMajor("10.00", USD);
-const b = a.add(Money.fromMajor("5.00", USD));
+const bill = money("100.00", "USD");
+const shares = bill.split(3);
+// [money("33.34"), money("33.33"), money("33.33")]
 
-console.log(a.format()); // "$10.00" (unchanged)
-console.log(b.format()); // "$15.00"
+// Verify sum equals original
+shares.reduce((a, b) => a.add(b)).equals(bill); // true
 ```
 
-### Explicit Rounding
+### Rounding
 
-Operations that result in fractional minor units (like multiplication) require an explicit rounding mode.
+Operations that produce fractional minor units require explicit rounding:
 
 ```typescript
-const m = Money.fromMajor("10.00", USD);
-// m.multiply(0.333); // Throws RoundingRequiredError
-m.multiply(0.333, { rounding: RoundingMode.HALF_UP }); // OK
+const price = money("100.00", "USD");
+
+// Division requires rounding mode
+const third = price.divide(3, { rounding: RoundingMode.HALF_UP });
+console.log(third.format()); // "$33.33"
+
+// Or use allocate for lossless division
+const parts = price.allocate([1, 1, 1]);
+// ["$33.34", "$33.33", "$33.33"]
 ```
 
-## Usage Examples
+### Custom Tokens
 
-### Allocation (Splitting Funds)
-
-Split money without losing a cent. Remainders are distributed deterministically using the largest remainder method.
+Define cryptocurrencies or custom tokens:
 
 ```typescript
-const pot = Money.fromMajor("100.00", USD);
-const [part1, part2, part3] = pot.allocate([1, 1, 1]);
+import { defineToken, money } from "monetra";
 
-// part1: $33.34
-// part2: $33.33
-// part3: $33.33
-// Sum: $100.00
+const USDC = defineToken({
+  code: "USDC",
+  symbol: "USDC",
+  decimals: 6,
+  type: "crypto",
+});
+
+const balance = money("1000.50", USDC);
+console.log(balance.format()); // "1,000.50 USDC"
 ```
 
-## What's New in v2.0
-
-### New Money Methods
+### Financial Calculations
 
 ```typescript
-// Convenient aliases
-Money.fromCents(1000, 'USD');      // Same as fromMinor
-Money.fromDecimal('10.50', 'USD'); // Same as fromMajor
+import { money, futureValue, pmt, loan } from "monetra";
 
-// Clamp between bounds
-const clamped = price.clamp(minPrice, maxPrice);
+// Future value of investment
+const principal = money("10000", "USD");
+const future = futureValue(principal, {
+  rate: 0.07,
+  years: 10,
+  compoundingPerYear: 12,
+});
+console.log(future.format()); // "$20,096.61"
 
-// Raw decimal string (no locale formatting)
-const decimal = price.toDecimalString(); // "10.50"
-
-// JSON serialization support
-const json = JSON.stringify(money);
-const restored = JSON.parse(json, Money.reviver);
+// Monthly loan payment
+const payment = pmt({
+  principal: money("200000", "USD"),
+  annualRate: 0.065,
+  years: 30,
+});
+console.log(payment.format()); // "$1,264.14"
 ```
 
-### TRUNCATE Rounding Mode
+### Ledger
+
+Track transactions with verification:
 
 ```typescript
-money.divide(3, { rounding: RoundingMode.TRUNCATE }); // Truncate towards zero
+import { Ledger, money } from "monetra";
+
+const ledger = new Ledger("USD");
+
+ledger.credit("account", money("1000.00", "USD"), "Deposit");
+ledger.debit("account", money("50.00", "USD"), "Purchase");
+
+console.log(ledger.getBalance("account").format()); // "$950.00"
+console.log(ledger.verify()); // true
 ```
 
-### Accounting Format
+---
 
-```typescript
-const negative = Money.fromDecimal('-100.00', 'USD');
-negative.format({ accounting: true }); // "($100.00)"
-```
+## API Summary
 
-### Rate Abstraction for Interest Calculations
+### Money Class
 
-```typescript
-import { Rate } from 'monetra';
+| Method                              | Description                          |
+| ----------------------------------- | ------------------------------------ |
+| `money(amount, currency)`           | Create Money from string or number   |
+| `Money.fromMinor(cents, currency)`  | Create from minor units              |
+| `Money.fromMajor(amount, currency)` | Create from major units (string)     |
+| `Money.zero(currency)`              | Create zero amount                   |
+| `.add(other)`                       | Add two Money values                 |
+| `.subtract(other)`                  | Subtract Money values                |
+| `.multiply(factor, options?)`       | Multiply by scalar                   |
+| `.divide(divisor, options)`         | Divide by scalar (requires rounding) |
+| `.percentage(percent, rounding?)`   | Calculate percentage                 |
+| `.split(n)`                         | Split into n equal parts             |
+| `.allocate(ratios)`                 | Allocate by ratios                   |
+| `.format(options?)`                 | Format for display                   |
+| `.equals(other)`                    | Check equality                       |
+| `.lessThan(other)`                  | Compare values                       |
+| `.greaterThan(other)`               | Compare values                       |
+| `.isPositive()`                     | Check if positive                    |
+| `.isNegative()`                     | Check if negative                    |
+| `.isZero()`                         | Check if zero                        |
 
-const annual = Rate.percent(12);
-const monthly = annual.periodic(12);        // 1%
-const effective = annual.toEffective(12);   // ~12.68%
-```
+### Financial Functions
 
-### Historical Exchange Rates
+| Function                                  | Description                                   |
+| ----------------------------------------- | --------------------------------------------- |
+| `futureValue(principal, options)`         | Calculate future value with compound interest |
+| `presentValue(futureAmount, options)`     | Calculate present value                       |
+| `pmt(options)`                            | Calculate loan payment amount                 |
+| `loan(options)`                           | Generate amortization schedule                |
+| `npv(initialInvestment, cashFlows, rate)` | Net present value                             |
+| `irr(initialInvestment, cashFlows)`       | Internal rate of return                       |
 
-```typescript
-const converter = new Converter('USD', { EUR: 0.92 });
-converter.addHistoricalRate('EUR', 0.85, new Date('2024-01-01'));
-converter.convert(money, 'EUR', { date: new Date('2024-06-01') });
-```
+### Classes
 
-### Error Codes for Programmatic Handling
+| Class       | Description                                   |
+| ----------- | --------------------------------------------- |
+| `Ledger`    | Append-only transaction log with verification |
+| `Converter` | Currency conversion with rate management      |
+| `MoneyBag`  | Multi-currency aggregation                    |
 
-```typescript
-try {
-  usd.add(eur);
-} catch (error) {
-  if (error.code === MonetraErrorCode.CURRENCY_MISMATCH) {
-    // Handle programmatically
-  }
-}
-```
-
-### Browser-Compatible Ledger
-
-```typescript
-// Async methods for browser environments
-const entry = await ledger.recordAsync(money, metadata);
-const isValid = await ledger.verifyAsync();
-```
-
-📖 **See [Migration Guide](docs/006-MIGRATION-v2.md) for upgrade instructions.**
+---
 
 ## Documentation
 
-For detailed information, please refer to the documentation in the `docs` folder:
+Full documentation is available in the [docs](docs/index.md) directory:
 
-0. [Introduction (Non-Technical)](docs/000-INTRODUCTION.md) - What is Monetra and who should use it
-1. [Core Concepts](docs/001-CORE-CONCEPTS.md) - Fundamental principles and design decisions
-2. [Ledger System](docs/002-LEDGER-SYSTEM.md) - Audit trails and transaction history
-3. [Financial Math](docs/003-FINANCIAL-MATH.md) - Loans, investments, and time-value-of-money
-4. [Tokens & Crypto](docs/004-TOKENS-AND-CRYPTO.md) - Cryptocurrency and custom token support
-5. [API Reference](docs/005-API-REFERENCE.md) - Complete API documentation
-6. [Migration Guide v2.0](docs/006-MIGRATION-v2.md) - Upgrading from v1.x
-7. [Cookbook](docs/007-COOKBOOK.md) - Practical recipes and patterns
+**Getting Started**
+
+- [Installation & Setup](docs/getting-started.md)
+- [Core Concepts](docs/core-concepts.md)
+
+**API Reference**
+
+- [Money](docs/api/money.md) - Core monetary value class
+- [Ledger](docs/api/ledger.md) - Transaction log with verification
+- [Financial](docs/api/financial.md) - Financial calculations
+- [Currency & Tokens](docs/api/currency.md) - Currency and token definitions
+
+**Guides**
+
+- [Allocation & Splitting](docs/guides/allocation.md)
+- [Formatting & Parsing](docs/guides/formatting.md)
+- [Custom Tokens](docs/guides/custom-tokens.md)
+- [Error Handling](docs/guides/error-handling.md)
+
+**Framework Examples**
+
+- [React.js](docs/examples/react.md)
+- [Vue.js](docs/examples/vue.md)
+- [Node.js](docs/examples/node.md)
+
+**Reference**
+
+- [Best Practices](docs/best-practices.md)
+- [Library Comparison](docs/comparison.md)
+
+---
 
 ## Testing
 
-We maintain 100% test coverage to ensure financial correctness.
-
 ```bash
-# Run all tests
+# Run tests
 npm test
 
-# Run tests in watch mode
+# Watch mode
 npm run test:watch
 
-# Generate coverage report
+# Coverage report
 npm run test:coverage
 ```
 
+---
+
 ## Contributing
 
-Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to get started.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
-We also have a [Code of Conduct](CODE_OF_CONDUCT.md) that all contributors are expected to follow.
+Please review our [Code of Conduct](CODE_OF_CONDUCT.md) before contributing.
+
+---
 
 ## Security
 
-If you discover a security vulnerability, please review our [Security Policy](SECURITY.md) for instructions on how to report it responsibly.
+Report security vulnerabilities according to our [Security Policy](SECURITY.md).
+
+---
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT - see [LICENSE](LICENSE) for details.
