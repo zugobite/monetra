@@ -12,25 +12,37 @@ First off, thanks for taking the time to contribute! Monetra is a critical finan
 
 ## Guidelines
 
+### Issue Tracking & Roadmap
+
+We use [GitHub Projects](https://github.com/users/zugobite/projects/2) to track our roadmap and active development.
+
+- **Before starting work**: Please check the "In Progress" column to ensure no one else is working on the same task.
+- **Picking up an issue**: Comment on the issue asking to be assigned, so we can move it to "In Progress".
+- **Status Updates**: Check the board for the latest status on features and bugs.
+
 ### Code Style
-*   We use **TypeScript** with `strict: true`.
-*   No floating-point arithmetic is allowed.
-*   All operations must be immutable.
-*   Run `npm run lint` to ensure code style compliance.
+
+- We use **TypeScript** with `strict: true`.
+- No floating-point arithmetic is allowed.
+- All operations must be immutable.
+- Run `npm run lint` to ensure code style compliance.
 
 ### Testing
-*   **Correctness is paramount.**
-*   All new features must include comprehensive unit tests.
-*   Run `npm test` to verify your changes.
-*   Ensure 100% test coverage for new logic.
+
+- **Correctness is paramount.**
+- All new features must include comprehensive unit tests.
+- Run `npm test` to verify your changes.
+- Ensure 100% test coverage for new logic.
 
 ### Documentation
-*   Update `README.md` or `docs/` if you change public APIs.
-*   Add TSDoc comments to all exported functions and classes.
+
+- Update `README.md` or `docs/` if you change public APIs.
+- Add TSDoc comments to all exported functions and classes.
 
 ### Commits
-*   Keep commits atomic and well-described.
-*   We follow [Conventional Commits](https://www.conventionalcommits.org/) (e.g., `feat: add allocation`, `fix: rounding error`).
+
+- Keep commits atomic and well-described.
+- We follow [Conventional Commits](https://www.conventionalcommits.org/) (e.g., `feat: add allocation`, `fix: rounding error`).
 
 ## Development Workflow
 

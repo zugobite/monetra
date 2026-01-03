@@ -269,6 +269,8 @@ npm run test:coverage
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
+Check our [Project Roadmap](https://github.com/users/zugobite/projects/2) to see what we're working on.
+
 Please review our [Code of Conduct](CODE_OF_CONDUCT.md) before contributing.
 
 ---

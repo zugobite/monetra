@@ -1,13 +1,15 @@
 ---
 name: Feature request
 about: Suggest an idea for this project
-title: ''
+title: ""
 labels: enhancement
-assignees: ''
+assignees: ""
 ---
 
 **Is your feature request related to a problem? Please describe.**
 A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+
+> **Note:** Please check our [Project Board](https://github.com/users/zugobite/projects/2) to see if this feature is already planned.
 
 **Describe the solution you'd like**
 A clear and concise description of what you want to happen.
