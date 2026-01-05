@@ -5,6 +5,51 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+## [2.2.0] - 2026-01-05
+
+### Added
+
+#### Simple Interest Calculations
+
+- **`simpleInterest(principal, options)`** - Calculates simple interest earned on principal
+  - Formula: `Interest = P × r × t`
+  - Uses Rate class for type-safe interest rate handling
+  - Supports fractional years for precise time calculations
+  - Handles edge cases (zero rate, zero time) gracefully
+  - Example: `simpleInterest(Money.fromMajor("1000", "USD"), { rate: Rate.percent(5), years: 2 })` returns `$100.00`
+
+- **`simpleInterestTotal(principal, options)`** - Calculates total amount (principal + simple interest)  
+  - Formula: `Total = P × (1 + r × t)`
+  - Returns final amount after simple interest accrual
+  - Mathematically equivalent to `principal.add(simpleInterest(...))`
+  - Example: `simpleInterestTotal(Money.fromMajor("1000", "USD"), { rate: Rate.percent(5), years: 2 })` returns `$1,100.00`
+
+#### Documentation Updates
+
+- Added Simple Interest section to Financial API Reference (`docs/api/financial.md`)
+- Updated formulas tracking in `docs/formulas/easy.md` marking simple interest as ✅ implemented
+- Comprehensive examples covering short-term loans, bond accrued interest, and comparative analysis
+- Mathematical formulas with LaTeX notation for clarity
+
+#### Testing
+
+- Complete test suite for simple interest functions (`tests/financial/simple.test.ts`)
+- Tests cover known values, fractional years, different currencies, edge cases, and rounding modes  
+- Property-based testing verifying mathematical relationships between functions
+- Edge case testing for minimal amounts, large amounts, and currency consistency
+
+### Technical Details
+
+- Implementation uses existing `Rate` class for type-safe rate handling
+- Integrates seamlessly with `Money` class arithmetic operations  
+- Follows existing patterns in financial module for consistency
+- Proper BigInt-based precision arithmetic prevents floating-point errors
+- Full TypeScript support with comprehensive JSDoc documentation
+
+---
+
 ## [2.1.0] - 2026-01-03
 
 ### Added

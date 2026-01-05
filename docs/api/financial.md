@@ -9,6 +9,9 @@ Monetra provides financial calculation functions for compound interest, loan amo
 - [Compound Interest](#compound)
   - [futureValue()](#futurevalue)
   - [presentValue()](#presentvalue)
+- [Simple Interest](#simple)
+  - [simpleInterest()](#simpleinterest)
+  - [simpleInterestTotal()](#simpleinteresttotal)
 - [Loan Calculations](#loans)
   - [pmt()](#pmt)
   - [loan()](#loan)
@@ -329,6 +332,136 @@ const todayNeed = presentValue(million, {
 console.log(`Invest ${todayNeed.format()} today to become a millionaire`);
 // "Invest $131,367.12 today to become a millionaire"
 ```
+
+---
+
+## Simple Interest {#simple}
+
+Simple interest calculations for short-term loans and basic interest computations.
+
+### simpleInterest() {#simpleinterest}
+
+Calculates the simple interest earned on a principal amount.
+
+**Formula:** $Interest = P \times r \times t$
+
+```typescript
+function simpleInterest(
+  principal: Money,
+  options: {
+    rate: Rate; // Annual interest rate
+    years: number; // Time period in years
+    rounding?: RoundingMode; // Rounding strategy (default: HALF_EVEN)
+  }
+): Money;
+```
+
+**Parameters:**
+
+- `principal` - The principal amount as Money
+- `options.rate` - Annual interest rate as Rate object
+- `options.years` - Time period in years (can be fractional)
+- `options.rounding` - Rounding mode for calculations
+
+**Returns:** Interest amount as `Money`
+
+**Examples:**
+
+<details open>
+<summary><strong>TypeScript</strong></summary>
+
+```typescript
+import { Money, Rate, simpleInterest } from "monetra";
+
+const principal = Money.fromMajor("1000.00", "USD");
+const rate = Rate.percent(5); // 5% annual rate
+
+// Calculate interest for 2 years
+const interest = simpleInterest(principal, { rate, years: 2 });
+console.log(interest.format()); // "$100.00"
+
+// Short-term loan: 6 months at 8% annual rate
+const shortTerm = simpleInterest(principal, {
+  rate: Rate.percent(8),
+  years: 0.5, // 6 months
+});
+console.log(shortTerm.format()); // "$40.00"
+
+// Bond accrued interest between coupon payments
+const bondPrincipal = Money.fromMajor("10000.00", "USD");
+const accruedInterest = simpleInterest(bondPrincipal, {
+  rate: Rate.percent(4.5),
+  years: 91 / 365, // 91 days between payments
+});
+console.log(accruedInterest.format()); // "$112.47"
+```
+
+</details>
+
+### simpleInterestTotal() {#simpleinteresttotal}
+
+Calculates the total amount (principal + simple interest).
+
+**Formula:** $Total = P \times (1 + r \times t)$
+
+```typescript
+function simpleInterestTotal(
+  principal: Money,
+  options: {
+    rate: Rate; // Annual interest rate
+    years: number; // Time period in years
+    rounding?: RoundingMode; // Rounding strategy (default: HALF_EVEN)
+  }
+): Money;
+```
+
+**Parameters:**
+
+- `principal` - The principal amount as Money
+- `options.rate` - Annual interest rate as Rate object
+- `options.years` - Time period in years (can be fractional)
+- `options.rounding` - Rounding mode for calculations
+
+**Returns:** Total amount (principal + interest) as `Money`
+
+**Examples:**
+
+<details open>
+<summary><strong>TypeScript</strong></summary>
+
+```typescript
+import { Money, Rate, simpleInterestTotal } from "monetra";
+
+const principal = Money.fromMajor("1000.00", "USD");
+const rate = Rate.percent(5);
+
+// Total amount after 2 years
+const total = simpleInterestTotal(principal, { rate, years: 2 });
+console.log(total.format()); // "$1,100.00"
+
+// Compare simple vs compound interest
+const simpleTotal = simpleInterestTotal(principal, {
+  rate: Rate.percent(7),
+  years: 10,
+});
+const compoundTotal = futureValue(principal, {
+  rate: 0.07,
+  years: 10,
+  compoundingPerYear: 1,
+});
+
+console.log("Simple:  ", simpleTotal.format()); // "$1,700.00"
+console.log("Compound:", compoundTotal.format()); // "$1,967.15"
+
+// Relationship verification
+const interest = simpleInterest(principal, { rate, years: 2 });
+const totalCheck = principal.add(interest);
+const directTotal = simpleInterestTotal(principal, { rate, years: 2 });
+
+console.log(totalCheck.equals(directTotal)); // true
+```
+
+</details>
 
 ---
 
