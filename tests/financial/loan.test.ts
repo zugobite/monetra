@@ -1,5 +1,11 @@
 import { describe, it, expect } from "vitest";
-import { loan, pmt, totalInterest, totalInterestFromSchedule } from "../../src/financial/loan";
+import {
+  loan,
+  pmt,
+  totalInterest,
+  totalInterestFromSchedule,
+  interestOnlyPayment,
+} from "../../src/financial/loan";
 import { Money } from "../../src/money/Money";
 import { USD } from "../../src/currency/iso4217";
 
@@ -80,5 +86,67 @@ describe("Financial - Loan", () => {
     });
 
     expect(interest.isZero()).toBe(true);
+  });
+
+  describe("Interest-Only Loans", () => {
+    it("should calculate monthly interest-only payment", () => {
+      const principal = Money.fromMajor("100000.00", USD);
+      const payment = interestOnlyPayment({
+        principal,
+        annualRate: 0.06, // 6% annual rate
+        periodsPerYear: 12, // Monthly payments
+      });
+
+      // Monthly payment = 100,000 × (0.06 / 12) = 100,000 × 0.005 = 500.00
+      expect(payment.format()).toBe("$500.00");
+    });
+
+    it("should calculate quarterly interest-only payment", () => {
+      const principal = Money.fromMajor("50000.00", USD);
+      const payment = interestOnlyPayment({
+        principal,
+        annualRate: 0.08, // 8% annual rate
+        periodsPerYear: 4, // Quarterly payments
+      });
+
+      // Quarterly payment = 50,000 × (0.08 / 4) = 50,000 × 0.02 = 1,000.00
+      expect(payment.format()).toBe("$1,000.00");
+    });
+
+    it("should calculate annual interest-only payment", () => {
+      const principal = Money.fromMajor("200000.00", USD);
+      const payment = interestOnlyPayment({
+        principal,
+        annualRate: 0.05, // 5% annual rate
+        periodsPerYear: 1, // Annual payment
+      });
+
+      // Annual payment = 200,000 × (0.05 / 1) = 200,000 × 0.05 = 10,000.00
+      expect(payment.format()).toBe("$10,000.00");
+    });
+
+    it("should return zero for zero interest rate", () => {
+      const principal = Money.fromMajor("100000.00", USD);
+      const payment = interestOnlyPayment({
+        principal,
+        annualRate: 0,
+        periodsPerYear: 12,
+      });
+
+      expect(payment.isZero()).toBe(true);
+    });
+
+    it("should handle commercial real estate example", () => {
+      // $5M commercial property with 5.5% interest-only for 5 years
+      const principal = Money.fromMajor("5000000.00", USD);
+      const monthlyPayment = interestOnlyPayment({
+        principal,
+        annualRate: 0.055,
+        periodsPerYear: 12,
+      });
+
+      // Monthly = 5,000,000 × (0.055 / 12) = 5,000,000 × 0.00458333... = 22,916.67
+      expect(monthlyPayment.format()).toBe("$22,916.67");
+    });
   });
 });
