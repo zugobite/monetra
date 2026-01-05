@@ -8,5 +8,9 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
     },
+    benchmark: {
+      reporters: ['default'],
+      outputFile: './benchmarks/results.json',
+    },
   },
 });

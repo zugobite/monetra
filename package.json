@@ -30,6 +30,8 @@
   "scripts": {
     "build": "tsup",
     "test": "vitest",
+    "bench": "vitest bench",
+    "bench:report": "node scripts/benchmark.mjs",
     "lint": "tsc --noEmit",
     "format": "prettier --write \"src/**/*.ts\"",
     "prepublishOnly": "npm run build"
