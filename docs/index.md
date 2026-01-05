@@ -145,6 +145,10 @@ console.log(ledger.verify()); // true - integrity verified
 - [Testing Strategies](./best-practices.md#testing)
 - [Performance Tips](./best-practices.md#performance)
 
+### Performance
+
+- [Benchmarks & Metrics](./performance.md)
+
 ### Comparison
 
 - [Library Comparison](./comparison.md)
