@@ -48,6 +48,13 @@ This document contains all **easy-level** financial formulas that can be impleme
 - **Use**: Short-term loans, bonds between coupon payments
 - **Implementation**: Direct multiplication with Rate class integration
 
+#### 7. Total Interest Paid
+
+- **Functions**: `totalInterest(options)`, `totalInterestFromSchedule(schedule)`
+- **Formula**: `Total Interest = (PMT × n) - P`
+- **Use**: Calculate total cost of borrowing, compare loan offers
+- **Implementation**: Direct calculation from payment formula or sum of schedule interest column
+
 ---
 
 ## 🔮 To Implement
@@ -80,13 +87,7 @@ This document contains all **easy-level** financial formulas that can be impleme
 - **Use**: Current loan payoff amount
 - **Implementation**: Power and division operations
 
-#### 11. Total Interest Paid
-
-- **Formula**: `Total Interest = (PMT × n) - P`
-- **Use**: Total cost of borrowing
-- **Implementation**: Simple arithmetic
-
-#### 12. Interest-Only Loan Payment
+#### 11. Interest-Only Loan Payment
 
 - **Formula**: `Payment = Principal × Periodic Rate`
 - **Use**: Commercial real estate, construction loans

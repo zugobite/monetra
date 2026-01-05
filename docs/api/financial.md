@@ -828,6 +828,132 @@ const totalInterest = computed(() =>
 
 ---
 
+### totalInterest() {#totalinterest}
+
+Calculates the total interest paid over the life of a loan using the payment formula.
+
+**Formula:** $\text{Total Interest} = (PMT \times n) - P$
+
+```typescript
+function totalInterest(options: {
+  principal: Money; // Loan amount
+  annualRate: number; // Annual interest rate (e.g., 0.05 for 5%)
+  periods: number; // Total number of payments
+  periodsPerYear?: number; // Payments per year (default: 12)
+  rounding?: RoundingMode; // Rounding strategy
+}): Money;
+```
+
+**Parameters:**
+
+- `principal` - Loan amount
+- `annualRate` - Annual interest rate as decimal
+- `periods` - Total number of payment periods
+- `periodsPerYear` - Payments per year (12 = monthly, 52 = weekly)
+- `rounding` - Rounding mode
+
+**Returns:** Total interest as `Money`
+
+**Examples:**
+
+<details open>
+<summary><strong>TypeScript</strong></summary>
+
+```typescript
+import { money, totalInterest } from "monetra";
+
+// Calculate total interest on a $10,000 loan at 5% for 12 months
+const interest = totalInterest({
+  principal: money("10000.00", "USD"),
+  annualRate: 0.05,
+  periods: 12,
+});
+console.log(`Total interest: ${interest.format()}`); // "Total interest: $272.84"
+
+// Compare loan offers
+const offer1 = totalInterest({
+  principal: money("25000.00", "USD"),
+  annualRate: 0.049, // 4.9%
+  periods: 60,
+});
+const offer2 = totalInterest({
+  principal: money("25000.00", "USD"),
+  annualRate: 0.059, // 5.9%
+  periods: 48,
+});
+
+console.log(`Offer 1 (4.9% / 60 mo): ${offer1.format()}`);
+console.log(`Offer 2 (5.9% / 48 mo): ${offer2.format()}`);
+// Compare to find the cheaper option
+```
+
+</details>
+
+<details>
+<summary><strong>JavaScript (ESM)</strong></summary>
+
+```javascript
+import { money, totalInterest } from "monetra";
+
+// Zero-interest loan returns zero
+const zeroInterest = totalInterest({
+  principal: money("5000.00", "USD"),
+  annualRate: 0,
+  periods: 24,
+});
+console.log(`Interest on 0% loan: ${zeroInterest.format()}`); // "$0.00"
+```
+
+</details>
+
+---
+
+### totalInterestFromSchedule() {#totalinterestfromschedule}
+
+Sums the interest column from an existing loan amortization schedule.
+
+```typescript
+function totalInterestFromSchedule(schedule: LoanScheduleEntry[]): Money;
+```
+
+**Parameters:**
+
+- `schedule` - Array of `LoanScheduleEntry` objects from `loan()`
+
+**Returns:** Total interest as `Money`
+
+**Throws:** `Error` if schedule is empty
+
+**Examples:**
+
+<details open>
+<summary><strong>TypeScript</strong></summary>
+
+```typescript
+import { money, loan, totalInterestFromSchedule } from "monetra";
+
+// Generate schedule then calculate total interest
+const schedule = loan({
+  principal: money("10000.00", "USD"),
+  annualRate: 0.05,
+  periods: 12,
+});
+
+const interest = totalInterestFromSchedule(schedule);
+console.log(`Total interest from schedule: ${interest.format()}`);
+// "Total interest from schedule: $272.84"
+```
+
+</details>
+
+::: tip When to use which?
+
+- Use `totalInterest()` for a quick calculation without generating a full schedule
+- Use `totalInterestFromSchedule()` when you already have a schedule and need the interest total
+  :::
+
+---
+
 ## Investment Analysis {#investment}
 
 ### npv() {#npv}

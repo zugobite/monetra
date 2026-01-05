@@ -26,16 +26,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Mathematically equivalent to `principal.add(simpleInterest(...))`
   - Example: `simpleInterestTotal(Money.fromMajor("1000", "USD"), { rate: Rate.percent(5), years: 2 })` returns `$1,100.00`
 
+#### Total Interest Paid Calculations
+
+- **`totalInterest(options)`** - Calculates total interest over the life of a loan
+  - Formula: `Total Interest = (PMT × n) - P`
+  - Uses existing `LoanOptions` interface for consistency
+  - Handles zero-interest loans gracefully (returns zero)
+  - Useful for comparing loan offers and understanding true cost of borrowing
+  - Example: `totalInterest({ principal: money("10000", "USD"), annualRate: 0.05, periods: 12 })` returns `$272.84`
+
+- **`totalInterestFromSchedule(schedule)`** - Sums interest from an existing amortization schedule
+  - Takes `LoanScheduleEntry[]` from `loan()` function
+  - Useful when schedule is already generated for other purposes
+  - Throws error if schedule is empty
+  - Example: `totalInterestFromSchedule(loan({ principal, annualRate: 0.05, periods: 12 }))`
+
 #### Documentation Updates
 
 - Added Simple Interest section to Financial API Reference (`docs/api/financial.md`)
-- Updated formulas tracking in `docs/formulas/easy.md` marking simple interest as implemented
+- Added Total Interest Paid section with `totalInterest()` and `totalInterestFromSchedule()` to Financial API Reference
+- Updated formulas tracking in `docs/formulas/easy.md` marking simple interest and total interest paid as implemented
 - Comprehensive examples covering short-term loans, bond accrued interest, and comparative analysis
 - Mathematical formulas with LaTeX notation for clarity
 
 #### Testing
 
 - Complete test suite for simple interest functions (`tests/financial/simple.test.ts`)
+- Added tests for `totalInterest()` and `totalInterestFromSchedule()` in `tests/financial/loan.test.ts`
 - Tests cover known values, fractional years, different currencies, edge cases, and rounding modes
 - Property-based testing verifying mathematical relationships between functions
 - Edge case testing for minimal amounts, large amounts, and currency consistency

@@ -37,11 +37,14 @@ describe("Financial - Loan", () => {
     expect(payment.format()).toBe("$856.07");
   });
 
-   it("should calculate total interest using payment formula", () => {
+  it("should calculate total interest using payment formula", () => {
     const principal = Money.fromMajor("10000.00", USD);
     const options = { principal, annualRate: 0.05, periods: 12 };
 
     const interest = totalInterest(options);
+
+    // Verify against known value (calculated externally)
+    expect(interest.format()).toBe("$272.84");
 
     // Cross-check against manual calculation: payment * periods - principal
     const payment = pmt(options);
