@@ -29,13 +29,15 @@
   },
   "scripts": {
     "build": "tsup && tsc --emitDeclarationOnly --outDir dist",
-    "test": "vitest",
+    "test": "vitest --run",
+    "test:watch": "vitest",
     "bench": "vitest bench",
     "bench:report": "node scripts/benchmark.mjs",
     "lint": "tsc --noEmit",
     "format": "prettier --write \"src/**/*.ts\"",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "pnpm run build"
   },
+  "packageManager": "pnpm@9.15.4",
   "keywords": [
     "money",
     "currency",
