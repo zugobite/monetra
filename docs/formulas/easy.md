@@ -91,6 +91,15 @@ This document contains all **easy-level** financial formulas that can be impleme
 - **Use**: Risk assessment, capital structure analysis
 - **Implementation**: Division operations with currency checks
 
+### Asset Management
+
+#### 12. Straight-Line Depreciation
+
+- **Function**: `straightLineDepreciation(options)`
+- **Formula**: `Annual Depreciation = (Cost - Salvage Value) / Useful Life`
+- **Use**: Accounting, tax calculations
+- **Implementation**: Division with rounding and schedule generation
+
 ---
 
 ## 🔮 To Implement
