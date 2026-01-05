@@ -10,7 +10,7 @@ A TypeScript library for handling monetary values with precision.
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
 [![Zero Dependencies](https://img.shields.io/badge/Dependencies-0-brightgreen.svg)]()
 
----
+---as
 
 ## Overview
 
