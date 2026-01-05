@@ -30,6 +30,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+#### Investment Analysis
+
+- **`currentYield(annualCoupon, currentPrice)`** - Calculates the current yield of a bond
+  - Formula: `Annual Coupon / Current Price`
+  - Returns yield as a decimal (e.g., 0.05 for 5%)
+  - Validates currency match and positive price
+
 #### Simple Interest Calculations
 
 - **`simpleInterest(principal, options)`** - Calculates simple interest earned on principal

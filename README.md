@@ -133,7 +133,13 @@ console.log(balance.format()); // "1,000.50 USDC"
 ### Financial Calculations
 
 ```typescript
-import { money, futureValue, pmt, loan } from "monetra";
+import { money, futureValue, pmt, loan, currentYield } from "monetra";
+
+// Bond Current Yield
+const coupon = money("50.00", "USD");
+const price = money("980.00", "USD");
+const yield = currentYield(coupon, price);
+console.log(`Yield: ${(yield * 100).toFixed(2)}%`); // "Yield: 5.10%"
 
 // Future value of investment
 const principal = money("10000", "USD");

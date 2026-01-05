@@ -71,9 +71,16 @@ This document contains all **easy-level** financial formulas that can be impleme
 - **Use**: Simple profitability metric
 - **Implementation**: Basic arithmetic with Money objects
 
+#### 10. Current Yield
+
+- **Function**: `currentYield(annualCoupon, currentPrice)`
+- **Formula**: `Current Yield = Annual Coupon Payment / Current Market Price`
+- **Use**: Bond income analysis
+- **Implementation**: Division of Money objects
+
 ### Financial Ratios
 
-#### 10. Leverage Ratios
+#### 11. Leverage Ratios
 
 - **Functions**: `debtToEquity()`, `debtToAssets()`, `interestCoverage()`, `equityMultiplier()`, `leverageRatios()`
 - **Formulas**:
