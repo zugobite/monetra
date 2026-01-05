@@ -55,9 +55,16 @@ This document contains all **easy-level** financial formulas that can be impleme
 - **Use**: Calculate total cost of borrowing, compare loan offers
 - **Implementation**: Direct calculation from payment formula or sum of schedule interest column
 
+#### 8. Interest-Only Loan Payment
+
+- **Function**: `interestOnlyPayment(options)`
+- **Formula**: `Payment = Principal × (Annual Rate / Periods Per Year)`
+- **Use**: Commercial real estate, construction loans, HELOCs
+- **Implementation**: Direct multiplication of principal and periodic rate
+
 ### Investment Analysis
 
-#### 8. Return on Investment (ROI)
+#### 9. Return on Investment (ROI)
 
 - **Function**: `roi(initialValue, finalValue)`
 - **Formula**: `ROI = (Final Value - Initial Value) / Initial Value`
@@ -66,7 +73,7 @@ This document contains all **easy-level** financial formulas that can be impleme
 
 ### Financial Ratios
 
-#### 9. Leverage Ratios
+#### 10. Leverage Ratios
 
 - **Functions**: `debtToEquity()`, `debtToAssets()`, `interestCoverage()`, `equityMultiplier()`, `leverageRatios()`
 - **Formulas**:
@@ -103,11 +110,7 @@ This document contains all **easy-level** financial formulas that can be impleme
 - **Use**: Current loan payoff amount
 - **Implementation**: Power and division operations
 
-#### 11. Interest-Only Loan Payment
 
-- **Formula**: `Payment = Principal × Periodic Rate`
-- **Use**: Commercial real estate, construction loans
-- **Implementation**: Direct multiplication
 
 ### Bond Valuation
 

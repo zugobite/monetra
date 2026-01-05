@@ -69,6 +69,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Handles negative returns (losses) and break-even scenarios
   - Example: `roi(money("1000", "USD"), money("1150", "USD"))` returns `0.15`
 
+#### Interest-Only Loan Payment
+
+- **`interestOnlyPayment(options)`** - Calculates periodic payment for interest-only loans
+  - Formula: `Payment = Principal × (Annual Rate / Periods Per Year)`
+  - Supports different compounding frequencies (monthly, quarterly, etc.)
+  - Useful for commercial real estate, construction loans, and HELOCs
+  - Example: `interestOnlyPayment({ principal: money("100000", "USD"), annualRate: 0.06 })` returns `$500.00`
+
 #### Documentation Updates
 
 - Added Simple Interest section to Financial API Reference (`docs/api/financial.md`)

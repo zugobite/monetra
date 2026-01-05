@@ -17,6 +17,13 @@ export interface LoanOptions {
   rounding?: RoundingMode;
 }
 
+export interface InterestOnlyOptions {
+  principal: Money;
+  annualRate: number; // e.g., 0.05 for 5%
+  periodsPerYear?: number; // Default: 12 (monthly)
+  rounding?: RoundingMode;
+}
+
 /**
  * Calculates loan amortization schedule.
  */
@@ -132,3 +139,47 @@ export function totalInterestFromSchedule(
     Money.zero(currency),
   );
 }
+
+/**
+ * Calculates the periodic payment for an interest-only loan.
+ *
+ * In an interest-only loan, the borrower pays only the interest each period,
+ * with the full principal due at maturity or refinancing. This is common in:
+ * - Commercial real estate
+ * - Construction loans
+ * - Home Equity Lines of Credit (HELOCs)
+ *
+ * Formula: Payment = Principal × Periodic Rate
+ * Where Periodic Rate = Annual Rate / Periods Per Year
+ *
+ * @param options - Interest-only loan configuration
+ * @returns The periodic interest payment as a Money object
+ *
+ * @example
+ * ```typescript
+ * const principal = Money.fromMajor("100000", USD);
+ * const payment = interestOnlyPayment({
+ *   principal,
+ *   annualRate: 0.06, // 6% annual
+ *   periodsPerYear: 12 // Monthly payments
+ * });
+ * // Returns $500.00 per month
+ * ```
+ */
+export function interestOnlyPayment(options: InterestOnlyOptions): Money {
+  const {
+    principal,
+    annualRate,
+    periodsPerYear = 12,
+    rounding = RoundingMode.HALF_EVEN,
+  } = options;
+
+  // If rate is zero, interest payment is zero
+  if (annualRate === 0) {
+    return Money.zero(principal.currency);
+  }
+
+  const periodicRate = annualRate / periodsPerYear;
+  return principal.multiply(periodicRate, { rounding });
+}
+
