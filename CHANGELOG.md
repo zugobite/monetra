@@ -41,11 +41,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Throws error if schedule is empty
   - Example: `totalInterestFromSchedule(loan({ principal, annualRate: 0.05, periods: 12 }))`
 
+#### Return on Investment (ROI)
+
+- **`roi(initialValue, finalValue)`** - Calculates Return on Investment
+  - Formula: `ROI = (Final Value - Initial Value) / Initial Value`
+  - Returns decimal value (e.g., 0.15 for 15%)
+  - Validates currency consistency between initial and final values
+  - Handles negative returns (losses) and break-even scenarios
+  - Example: `roi(money("1000", "USD"), money("1150", "USD"))` returns `0.15`
+
 #### Documentation Updates
 
 - Added Simple Interest section to Financial API Reference (`docs/api/financial.md`)
 - Added Total Interest Paid section with `totalInterest()` and `totalInterestFromSchedule()` to Financial API Reference
-- Updated formulas tracking in `docs/formulas/easy.md` marking simple interest and total interest paid as implemented
+- Added ROI section to Financial API Reference (`docs/api/financial.md`)
+- Updated formulas tracking in `docs/formulas/easy.md` marking simple interest, total interest paid, and ROI as implemented
 - Comprehensive examples covering short-term loans, bond accrued interest, and comparative analysis
 - Mathematical formulas with LaTeX notation for clarity
 
@@ -53,6 +63,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Complete test suite for simple interest functions (`tests/financial/simple.test.ts`)
 - Added tests for `totalInterest()` and `totalInterestFromSchedule()` in `tests/financial/loan.test.ts`
+- Added tests for `roi()` in `tests/financial/investment.test.ts`
 - Tests cover known values, fractional years, different currencies, edge cases, and rounding modes
 - Property-based testing verifying mathematical relationships between functions
 - Edge case testing for minimal amounts, large amounts, and currency consistency
