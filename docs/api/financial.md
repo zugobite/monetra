@@ -20,6 +20,14 @@ Monetra provides financial calculation functions for compound interest, loan amo
   - [currentYield()](#currentyield)
   - [npv()](#npv)
   - [irr()](#irr)
+- [Asset Management](#asset-management)
+  - [straightLineDepreciation()](#straightlinedepreciation)
+- [Financial Ratios](#ratios)
+  - [debtToEquity()](#debttoequity)
+  - [debtToAssets()](#debttoassets)
+  - [interestCoverage()](#interestcoverage)
+  - [equityMultiplier()](#equitymultiplier)
+  - [leverageRatios()](#leverageratios)
 - [Rate Utilities](#rates)
 
 ---
@@ -956,6 +964,48 @@ console.log(`Total interest from schedule: ${interest.format()}`);
 
 ---
 
+### interestOnlyPayment() {#interestonlypayment}
+
+Calculates the periodic payment for an interest-only loan.
+
+**Formula:** $Payment = Principal \times \frac{Annual Rate}{Periods Per Year}$
+
+```typescript
+function interestOnlyPayment(options: {
+  principal: Money;
+  annualRate: number; // e.g., 0.05 for 5%
+  periodsPerYear?: number; // Default: 12 (monthly)
+  rounding?: RoundingMode;
+}): Money;
+```
+
+**Parameters:**
+
+- `principal` - Loan amount
+- `annualRate` - Annual interest rate as decimal
+- `periodsPerYear` - Payments per year (default: 12)
+- `rounding` - Rounding mode
+
+**Returns:** Periodic interest payment as `Money`
+
+**Examples:**
+
+```typescript
+import { money, interestOnlyPayment } from "monetra";
+
+const principal = money("100000.00", "USD");
+
+// Monthly interest payment at 6% annual rate
+const payment = interestOnlyPayment({
+  principal,
+  annualRate: 0.06,
+  periodsPerYear: 12,
+});
+console.log(payment.format()); // "$500.00"
+```
+
+---
+
 ## Investment Analysis {#investment}
 
 ### roi() {#roi}
@@ -1267,36 +1317,200 @@ function IRRCalculator() {
 
 ---
 
-## Rate Utilities {#rates}
+## Asset Management {#asset-management}
 
-Monetra includes utilities for rate conversions:
+### straightLineDepreciation() {#straightlinedepreciation}
+
+Calculates straight-line depreciation for an asset.
+
+**Formula:**
+- Annual Depreciation = $\frac{Cost - Salvage Value}{Useful Life}$
+- Book Value at Year N = $Cost - (Annual Depreciation \times N)$
 
 ```typescript
-import { money, futureValue } from "monetra";
+function straightLineDepreciation(options: {
+  cost: Money;
+  salvageValue: Money;
+  usefulLife: number; // in years
+  rounding?: RoundingMode; // Default: HALF_EVEN
+}): DepreciationResult;
 
-// Converting between rate frequencies
-function effectiveAnnualRate(
-  nominalRate: number,
-  compoundingsPerYear: number
-): number {
-  return (
-    Math.pow(1 + nominalRate / compoundingsPerYear, compoundingsPerYear) - 1
-  );
+interface DepreciationResult {
+  annualDepreciation: Money;
+  bookValueAtYear(year: number): Money;
+  schedule(): { year: number; depreciation: Money; bookValue: Money }[];
 }
+```
 
-// 6% nominal compounded monthly → effective annual rate
-const ear = effectiveAnnualRate(0.06, 12);
-console.log(`Effective Annual Rate: ${(ear * 100).toFixed(3)}%`); // "6.168%"
+**Parameters:**
 
-// Real vs Nominal rates (Fisher equation)
-function realRate(nominalRate: number, inflationRate: number): number {
-  return (1 + nominalRate) / (1 + inflationRate) - 1;
+- `options.cost` - Initial cost of the asset
+- `options.salvageValue` - Estimated value at end of useful life
+- `options.usefulLife` - Useful life in years
+- `options.rounding` - Rounding mode for annual depreciation calculation
+
+**Returns:** Object containing annual depreciation, book value calculator, and schedule generator.
+
+**Throws:**
+
+- `CurrencyMismatchError` if cost and salvage value currencies differ
+- `InvalidArgumentError` if useful life is not positive or salvage value > cost
+
+**Examples:**
+
+```typescript
+import { money, straightLineDepreciation } from "monetra";
+
+const cost = money("10000.00", "USD");
+const salvage = money("1000.00", "USD");
+const life = 5;
+
+const result = straightLineDepreciation({
+  cost,
+  salvageValue: salvage,
+  usefulLife: life
+});
+
+console.log(`Annual Depreciation: ${result.annualDepreciation.format()}`);
+// "Annual Depreciation: $1,800.00"
+
+console.log(`Book Value Year 3: ${result.bookValueAtYear(3).format()}`);
+// "Book Value Year 3: $4,600.00"
+
+const schedule = result.schedule();
+// [
+//   { year: 1, depreciation: "$1,800.00", bookValue: "$8,200.00" },
+//   ...
+//   { year: 5, depreciation: "$1,800.00", bookValue: "$1,000.00" }
+// ]
+```
+
+## Financial Ratios {#ratios}
+
+### debtToEquity() {#debttoequity}
+
+Calculates the Debt-to-Equity (D/E) ratio.
+
+**Formula:** $D/E = \frac{Total Debt}{Total Equity}$
+
+```typescript
+function debtToEquity(totalDebt: Money, totalEquity: Money): number;
+```
+
+**Returns:** Ratio as a number (e.g., 2.0 for 2:1)
+
+### debtToAssets() {#debttoassets}
+
+Calculates the Debt-to-Assets ratio.
+
+**Formula:** $D/A = \frac{Total Debt}{Total Assets}$
+
+```typescript
+function debtToAssets(totalDebt: Money, totalAssets: Money): number;
+```
+
+**Returns:** Ratio as a number
+
+### interestCoverage() {#interestcoverage}
+
+Calculates the Interest Coverage ratio.
+
+**Formula:** $ICR = \frac{EBIT}{Interest Expense}$
+
+```typescript
+function interestCoverage(ebit: Money, interestExpense: Money): number;
+```
+
+**Returns:** Ratio as a number (Infinity if interest expense is zero)
+
+### equityMultiplier() {#equitymultiplier}
+
+Calculates the Equity Multiplier.
+
+**Formula:** $EM = \frac{Total Assets}{Total Equity}$
+
+```typescript
+function equityMultiplier(totalAssets: Money, totalEquity: Money): number;
+```
+
+**Returns:** Ratio as a number
+
+### leverageRatios() {#leverageratios}
+
+Calculates all leverage ratios at once.
+
+```typescript
+function leverageRatios(inputs: {
+  totalDebt: Money;
+  totalEquity: Money;
+  totalAssets: Money;
+  ebit: Money;
+  interestExpense: Money;
+}): LeverageResult;
+
+interface LeverageResult {
+  debtToEquity: number;
+  debtToAssets: number;
+  interestCoverage: number;
+  equityMultiplier: number;
 }
+```
 
-const nominal = 0.08;
-const inflation = 0.03;
-const real = realRate(nominal, inflation);
-console.log(`Real return: ${(real * 100).toFixed(2)}%`); // "4.85%"
+## Rate Utilities {#rates}
+
+The `Rate` class provides type-safe handling of interest rates to avoid confusion between percentage (5%) and decimal (0.05) representations.
+
+### Rate Class
+
+```typescript
+class Rate {
+  static percent(value: number | string): Rate;
+  static decimal(value: number | string): Rate;
+  static zero(): Rate;
+
+  toPercent(): number;
+  toDecimal(): number;
+  toString(): string; // e.g., "5.5%"
+
+  add(other: Rate): Rate;
+  subtract(other: Rate): Rate;
+  multiply(scalar: number): Rate;
+  divide(divisor: number): Rate;
+
+  equals(other: Rate): boolean;
+  greaterThan(other: Rate): boolean;
+  lessThan(other: Rate): boolean;
+  isZero(): boolean;
+  isNegative(): boolean;
+
+  compoundFactor(periods: number): number; // (1 + r)^n
+  periodic(periodsPerYear: number): Rate; // r / n
+  toNominal(periodsPerYear: number): Rate;
+  toEffective(periodsPerYear: number): Rate;
+}
+```
+
+**Examples:**
+
+```typescript
+import { Rate } from "monetra";
+
+// Create rates safely
+const r1 = Rate.percent(5);     // 5%
+const r2 = Rate.decimal(0.05);  // 5%
+console.log(r1.equals(r2));     // true
+
+// Arithmetic
+const total = r1.add(Rate.percent(2)); // 7%
+console.log(total.toDecimal());        // 0.07
+
+// Conversions
+const monthly = Rate.percent(12).periodic(12);
+console.log(monthly.toString());       // "1%"
+
+// Compound factor
+const factor = Rate.percent(10).compoundFactor(2);
+console.log(factor);                   // 1.21 (1.10^2)
 ```
 
 ---

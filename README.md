@@ -133,7 +133,15 @@ console.log(balance.format()); // "1,000.50 USDC"
 ### Financial Calculations
 
 ```typescript
-import { money, futureValue, pmt, loan, currentYield } from "monetra";
+import { money, futureValue, pmt, loan, currentYield, straightLineDepreciation } from "monetra";
+
+// Depreciation
+const asset = straightLineDepreciation({
+  cost: money("10000", "USD"),
+  salvageValue: money("1000", "USD"),
+  usefulLife: 5
+});
+console.log(asset.annualDepreciation.format()); // "$1,800.00"
 
 // Bond Current Yield
 const coupon = money("50.00", "USD");
