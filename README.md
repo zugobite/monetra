@@ -257,13 +257,13 @@ Full documentation is available in the [docs](docs/index.md) directory:
 
 ```bash
 # Run tests
-npm test
+pnpm test
 
 # Watch mode
-npm run test:watch
+pnpm run test:watch
 
 # Coverage report
-npm run test:coverage
+pnpm run test:coverage
 ```
 
 ---
