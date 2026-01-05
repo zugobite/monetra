@@ -41,17 +41,16 @@ This document contains all **easy-level** financial formulas that can be impleme
 - **Formula**: `(1 + r)^n`
 - **Example**: Growth multiplier for compound interest
 
+#### 6. Simple Interest
+
+- **Functions**: `simpleInterest(principal, options)`, `simpleInterestTotal(principal, options)`
+- **Formula**: `Interest = P × r × t`, `Total = P × (1 + r × t)`
+- **Use**: Short-term loans, bonds between coupon payments
+- **Implementation**: Direct multiplication with Rate class integration
+
 ---
 
 ## 🔮 To Implement
-
-### Time Value of Money
-
-#### 6. Simple Interest
-
-- **Formula**: `Interest = P × r × t`
-- **Use**: Short-term loans, bonds between coupon payments
-- **Implementation**: Direct multiplication, no compounding
 
 ### Investment Analysis
 
