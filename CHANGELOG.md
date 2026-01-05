@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Handles edge cases (zero rate, zero time) gracefully
   - Example: `simpleInterest(Money.fromMajor("1000", "USD"), { rate: Rate.percent(5), years: 2 })` returns `$100.00`
 
-- **`simpleInterestTotal(principal, options)`** - Calculates total amount (principal + simple interest)  
+- **`simpleInterestTotal(principal, options)`** - Calculates total amount (principal + simple interest)
   - Formula: `Total = P × (1 + r × t)`
   - Returns final amount after simple interest accrual
   - Mathematically equivalent to `principal.add(simpleInterest(...))`
@@ -29,21 +29,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### Documentation Updates
 
 - Added Simple Interest section to Financial API Reference (`docs/api/financial.md`)
-- Updated formulas tracking in `docs/formulas/easy.md` marking simple interest as ✅ implemented
+- Updated formulas tracking in `docs/formulas/easy.md` marking simple interest as implemented
 - Comprehensive examples covering short-term loans, bond accrued interest, and comparative analysis
 - Mathematical formulas with LaTeX notation for clarity
 
 #### Testing
 
 - Complete test suite for simple interest functions (`tests/financial/simple.test.ts`)
-- Tests cover known values, fractional years, different currencies, edge cases, and rounding modes  
+- Tests cover known values, fractional years, different currencies, edge cases, and rounding modes
 - Property-based testing verifying mathematical relationships between functions
 - Edge case testing for minimal amounts, large amounts, and currency consistency
+
+### Changed
+
+- Updated development dependencies to latest versions (Vitest v4, Vite v7, Node types v25)
 
 ### Technical Details
 
 - Implementation uses existing `Rate` class for type-safe rate handling
-- Integrates seamlessly with `Money` class arithmetic operations  
+- Integrates seamlessly with `Money` class arithmetic operations
 - Follows existing patterns in financial module for consistency
 - Proper BigInt-based precision arithmetic prevents floating-point errors
 - Full TypeScript support with comprehensive JSDoc documentation

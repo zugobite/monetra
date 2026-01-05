@@ -20,13 +20,13 @@ This directory contains performance benchmarks for the Monetra library to ensure
 
 ```bash
 # Run all benchmarks
-npm run bench
+pnpm run bench
 
 # Run specific benchmark file
-npx vitest bench micro.bench.ts
+pnpm exec vitest bench micro.bench.ts
 
 # Run with detailed output
-npx vitest bench --reporter=verbose
+pnpm exec vitest bench --reporter=verbose
 ```
 
 ## Performance Targets
