@@ -52,9 +52,9 @@ export function loan(options: LoanOptions): LoanScheduleEntry[] {
       annualRate === 0
         ? Money.zero(principal.currency)
         : balance.multiply(periodicRate, { rounding });
-    
+
     let principalPayment = payment.subtract(interest);
-    
+
     // If payment < interest (negative amortization), principal payment is negative.
     // This implementation assumes standard amortization.
 
@@ -90,8 +90,45 @@ export function loan(options: LoanOptions): LoanScheduleEntry[] {
  * Calculates monthly payment amount.
  */
 export function pmt(
-  options: Omit<LoanOptions, "rounding"> & { rounding?: RoundingMode }
+  options: Omit<LoanOptions, "rounding"> & { rounding?: RoundingMode },
 ): Money {
   const schedule = loan(options);
   return schedule[0].payment;
+}
+
+/**
+ * Calculates total interest over the life of the loan using the payment formula.
+ */
+export function totalInterest(options: LoanOptions): Money {
+  const {
+    principal,
+    annualRate,
+    periods,
+    rounding = RoundingMode.HALF_EVEN,
+  } = options;
+
+  if (annualRate === 0) {
+    return Money.zero(principal.currency);
+  }
+
+  const payment = pmt(options);
+  const totalPaid = payment.multiply(periods, { rounding });
+  return totalPaid.subtract(principal);
+}
+
+/**
+ * Sums the interest column from a loan schedule.
+ */
+export function totalInterestFromSchedule(
+  schedule: LoanScheduleEntry[],
+): Money {
+  if (schedule.length === 0) {
+    throw new Error("Schedule must have at least one entry");
+  }
+
+  const currency = schedule[0].interest.currency;
+  return schedule.reduce(
+    (sum, entry) => sum.add(entry.interest),
+    Money.zero(currency),
+  );
 }
