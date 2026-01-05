@@ -5,7 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [2.3.0] - 2026-01-05
+
+### Added
+
+#### Leverage Ratios
+
+- **`debtToEquity(totalDebt, totalEquity)`** - Calculates Debt-to-Equity ratio
+  - Formula: `Total Debt / Total Equity`
+  - Measures financial leverage and solvency
+- **`debtToAssets(totalDebt, totalAssets)`** - Calculates Debt-to-Assets ratio
+  - Formula: `Total Debt / Total Assets`
+  - Indicates the percentage of assets financed by debt
+- **`interestCoverage(ebit, interestExpense)`** - Calculates Interest Coverage ratio
+  - Formula: `EBIT / Interest Expense`
+  - Measures ability to pay interest on outstanding debt
+- **`equityMultiplier(totalAssets, totalEquity)`** - Calculates Equity Multiplier
+  - Formula: `Total Assets / Total Equity`
+  - Measures the portion of assets funded by equity
+- **`leverageRatios(inputs)`** - Calculates all leverage ratios at once
+  - Returns an object containing all the above ratios
 
 ## [2.2.0] - 2026-01-05
 

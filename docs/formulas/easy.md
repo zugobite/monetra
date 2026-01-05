@@ -64,6 +64,19 @@ This document contains all **easy-level** financial formulas that can be impleme
 - **Use**: Simple profitability metric
 - **Implementation**: Basic arithmetic with Money objects
 
+### Financial Ratios
+
+#### 9. Leverage Ratios
+
+- **Functions**: `debtToEquity()`, `debtToAssets()`, `interestCoverage()`, `equityMultiplier()`, `leverageRatios()`
+- **Formulas**:
+  - D/E: `Total Debt / Total Equity`
+  - D/A: `Total Debt / Total Assets`
+  - Interest Coverage: `EBIT / Interest Expense`
+  - Equity Multiplier: `Total Assets / Total Equity`
+- **Use**: Risk assessment, capital structure analysis
+- **Implementation**: Division operations with currency checks
+
 ---
 
 ## 🔮 To Implement
@@ -144,12 +157,7 @@ This document contains all **easy-level** financial formulas that can be impleme
 - **Cash Ratio**: `Cash / Current Liabilities`
 - **Implementation**: Arithmetic operations
 
-#### 19. Leverage Ratios
 
-- **Debt-to-Equity**: `Total Debt / Total Equity`
-- **Debt-to-Assets**: `Total Debt / Total Assets`
-- **Interest Coverage**: `EBIT / Interest Expense`
-- **Implementation**: Division operations
 
 ### Depreciation
 
@@ -394,15 +402,7 @@ This creates a solid foundation for medium and hard formulas in subsequent relea
 - **Complexity**: Low
 - **Estimated Time**: 2 hours (all ratios)
 
-#### 16. Leverage Ratios
 
-- **Debt-to-Equity**: `Total Debt / Total Equity`
-- **Debt-to-Assets**: `Total Debt / Total Assets`
-- **Interest Coverage**: `EBIT / Interest Expense`
-- **Equity Multiplier**: `Total Assets / Total Equity`
-- **Use Cases**: Risk assessment, capital structure analysis
-- **Complexity**: Low
-- **Estimated Time**: 2 hours (all ratios)
 
 ---
 
@@ -428,7 +428,6 @@ This creates a solid foundation for medium and hard formulas in subsequent relea
 13. Expected Return
 14. Profitability Ratios
 15. Liquidity Ratios
-16. Leverage Ratios
 
 ---
 
