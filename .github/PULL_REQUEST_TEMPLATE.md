@@ -21,8 +21,8 @@ Fixes #(issue number)
 - [ ] I have commented my code, particularly in hard-to-understand areas
 - [ ] I have made corresponding changes to the documentation
 - [ ] I have added tests that prove my fix is effective or that my feature works
-- [ ] New and existing unit tests pass locally with my changes (`npm test`)
-- [ ] TypeScript compiles without errors (`npm run lint`)
+- [ ] New and existing unit tests pass locally with my changes (`pnpm test`)
+- [ ] TypeScript compiles without errors (`pnpm run lint`)
 - [ ] I have added an entry to CHANGELOG.md (if applicable)
 
 ## Test Coverage
