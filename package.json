@@ -1,7 +1,6 @@
 {
   "name": "monetra",
   "version": "2.1.0",
-  "type": "module",
   "description": "A currency-aware, integer-based money engine designed for financial correctness. Zero dependencies, TypeScript-first, auditable ledger support.",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -29,7 +28,7 @@
     }
   },
   "scripts": {
-    "build": "tsup",
+    "build": "tsup && tsc --emitDeclarationOnly --outDir dist",
     "test": "vitest",
     "bench": "vitest bench",
     "bench:report": "node scripts/benchmark.mjs",

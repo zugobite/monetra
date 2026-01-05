@@ -43,8 +43,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Updated development dependencies to latest versions (Vitest v4, Vite v7, Node types v25)
-- Migrated project configuration to ESM (`"type": "module"`)
-- Renamed configuration files to `.mjs` extension for better ESM compatibility
 
 ### Technical Details
 
