@@ -25,13 +25,13 @@ We use [GitHub Projects](https://github.com/users/zugobite/projects/2) to track 
 - We use **TypeScript** with `strict: true`.
 - No floating-point arithmetic is allowed.
 - All operations must be immutable.
-- Run `npm run lint` to ensure code style compliance.
+- Run `pnpm run lint` to ensure code style compliance.
 
 ### Testing
 
 - **Correctness is paramount.**
 - All new features must include comprehensive unit tests.
-- Run `npm test` to verify your changes.
+- Run `pnpm test` to verify your changes.
 - Ensure 100% test coverage for new logic.
 
 ### Documentation
@@ -48,14 +48,14 @@ We use [GitHub Projects](https://github.com/users/zugobite/projects/2) to track 
 
 ```bash
 # Install dependencies
-npm install
+pnpm install
 
 # Run tests
-npm test
+pnpm test
 
 # Build the package
-npm run build
+pnpm run build
 
 # Format code
-npm run format
+pnpm run format
 ```
