@@ -1,9 +1,33 @@
 import { describe, it, expect } from "vitest";
-import { npv, irr } from "../../src/financial/investment";
+import { npv, irr, roi } from "../../src/financial/investment";
 import { Money } from "../../src/money/Money";
-import { USD } from "../../src/currency/iso4217";
+import { USD, EUR } from "../../src/currency/iso4217";
 
 describe("Financial - Investment", () => {
+  it("should calculate ROI", () => {
+    const initial = Money.fromMajor("1000.00", USD);
+    const final = Money.fromMajor("1150.00", USD);
+    expect(roi(initial, final)).toBe(0.15);
+  });
+
+  it("should calculate negative ROI", () => {
+    const initial = Money.fromMajor("1000.00", USD);
+    const final = Money.fromMajor("800.00", USD);
+    expect(roi(initial, final)).toBe(-0.2);
+  });
+
+  it("should calculate zero ROI", () => {
+    const initial = Money.fromMajor("1000.00", USD);
+    const final = Money.fromMajor("1000.00", USD);
+    expect(roi(initial, final)).toBe(0);
+  });
+
+  it("should throw error for currency mismatch in ROI", () => {
+    const initial = Money.fromMajor("1000.00", USD);
+    const final = Money.fromMajor("1150.00", EUR);
+    expect(() => roi(initial, final)).toThrow(/Currency mismatch/);
+  });
+
   it("should calculate NPV", () => {
     const cashFlows = [
       Money.fromMajor("-1000.00", USD), // Initial investment

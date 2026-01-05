@@ -55,6 +55,15 @@ This document contains all **easy-level** financial formulas that can be impleme
 - **Use**: Calculate total cost of borrowing, compare loan offers
 - **Implementation**: Direct calculation from payment formula or sum of schedule interest column
 
+### Investment Analysis
+
+#### 8. Return on Investment (ROI)
+
+- **Function**: `roi(initialValue, finalValue)`
+- **Formula**: `ROI = (Final Value - Initial Value) / Initial Value`
+- **Use**: Simple profitability metric
+- **Implementation**: Basic arithmetic with Money objects
+
 ---
 
 ## 🔮 To Implement
@@ -66,12 +75,6 @@ This document contains all **easy-level** financial formulas that can be impleme
 - **Formula**: Time until `Σ CFt = Initial Investment`
 - **Use**: How long to recover investment (ignores time value)
 - **Implementation**: Cumulative sum until threshold reached
-
-#### 8. Return on Investment (ROI)
-
-- **Formula**: `ROI = (Gain - Cost) / Cost × 100%`
-- **Use**: Simple profitability metric
-- **Implementation**: Basic arithmetic
 
 #### 9. Holding Period Return (HPR)
 

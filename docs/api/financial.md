@@ -16,6 +16,7 @@ Monetra provides financial calculation functions for compound interest, loan amo
   - [pmt()](#pmt)
   - [loan()](#loan)
 - [Investment Analysis](#investment)
+  - [roi()](#roi)
   - [npv()](#npv)
   - [irr()](#irr)
 - [Rate Utilities](#rates)
@@ -955,6 +956,35 @@ console.log(`Total interest from schedule: ${interest.format()}`);
 ---
 
 ## Investment Analysis {#investment}
+
+### roi() {#roi}
+
+Calculates the Return on Investment (ROI).
+
+**Formula:** $ROI = \frac{Final Value - Initial Value}{Initial Value}$
+
+```typescript
+function roi(initialValue: Money, finalValue: Money): number;
+```
+
+**Parameters:**
+
+- `initialValue` - The initial investment cost
+- `finalValue` - The final value of the investment
+
+**Returns:** ROI as a decimal (e.g., 0.15 for 15%)
+
+**Examples:**
+
+```typescript
+import { money, roi } from "monetra";
+
+const initial = money("1000.00", "USD");
+const final = money("1150.00", "USD");
+
+const result = roi(initial, final);
+console.log(`ROI: ${(result * 100).toFixed(2)}%`); // "ROI: 15.00%"
+```
 
 ### npv() {#npv}
 

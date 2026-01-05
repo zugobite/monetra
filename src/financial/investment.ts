@@ -1,5 +1,27 @@
 import { Money } from "../money/Money";
 import { RoundingMode } from "../rounding/strategies";
+import { CurrencyMismatchError } from "../errors/CurrencyMismatchError";
+
+/**
+ * Calculates Return on Investment (ROI).
+ * ROI = (Final Value - Initial Value) / Initial Value
+ *
+ * @param initialValue - The initial investment cost.
+ * @param finalValue - The final value of the investment.
+ * @returns The ROI as a decimal (e.g., 0.15 for 15%).
+ * @throws {CurrencyMismatchError} If currencies differ.
+ */
+export function roi(initialValue: Money, finalValue: Money): number {
+  if (initialValue.currency.code !== finalValue.currency.code) {
+    throw new CurrencyMismatchError(
+      initialValue.currency.code,
+      finalValue.currency.code
+    );
+  }
+
+  const gain = finalValue.subtract(initialValue);
+  return Number(gain.minor) / Number(initialValue.minor);
+}
 
 /**
  * Calculates Net Present Value of cash flows.
