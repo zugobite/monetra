@@ -1,6 +1,7 @@
 import { Money } from "../money/Money";
 import { RoundingMode } from "../rounding/strategies";
 import { CurrencyMismatchError } from "../errors/CurrencyMismatchError";
+import { InvalidArgumentError } from "../errors/InvalidArgumentError";
 
 /**
  * Calculates Return on Investment (ROI).
@@ -82,4 +83,29 @@ export function irr(cashFlows: Money[], guess: number = 0.1): number {
   }
 
   throw new Error("IRR calculation did not converge");
+}
+
+/**
+ * Calculates the Current Yield of a bond.
+ * Current Yield = Annual Coupon Payment / Current Market Price
+ *
+ * @param annualCoupon - The total annual coupon payment.
+ * @param currentPrice - The current market price of the bond.
+ * @returns The current yield as a decimal (e.g., 0.05 for 5%).
+ * @throws {CurrencyMismatchError} If currencies differ.
+ * @throws {InvalidArgumentError} If price is zero or negative.
+ */
+export function currentYield(annualCoupon: Money, currentPrice: Money): number {
+  if (annualCoupon.currency.code !== currentPrice.currency.code) {
+    throw new CurrencyMismatchError(
+      annualCoupon.currency.code,
+      currentPrice.currency.code
+    );
+  }
+
+  if (currentPrice.minor <= 0n) {
+    throw new InvalidArgumentError("Current price must be positive");
+  }
+
+  return Number(annualCoupon.minor) / Number(currentPrice.minor);
 }

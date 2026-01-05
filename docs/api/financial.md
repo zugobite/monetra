@@ -17,6 +17,7 @@ Monetra provides financial calculation functions for compound interest, loan amo
   - [loan()](#loan)
 - [Investment Analysis](#investment)
   - [roi()](#roi)
+  - [currentYield()](#currentyield)
   - [npv()](#npv)
   - [irr()](#irr)
 - [Rate Utilities](#rates)
@@ -984,6 +985,40 @@ const final = money("1150.00", "USD");
 
 const result = roi(initial, final);
 console.log(`ROI: ${(result * 100).toFixed(2)}%`); // "ROI: 15.00%"
+```
+
+### currentYield() {#currentyield}
+
+Calculates the Current Yield of a bond.
+
+**Formula:** $Current Yield = \frac{Annual Coupon Payment}{Current Market Price}$
+
+```typescript
+function currentYield(annualCoupon: Money, currentPrice: Money): number;
+```
+
+**Parameters:**
+
+- `annualCoupon` - The total annual coupon payment
+- `currentPrice` - The current market price of the bond
+
+**Returns:** Current yield as a decimal (e.g., 0.05 for 5%)
+
+**Throws:**
+
+- `CurrencyMismatchError` if currencies differ
+- `InvalidArgumentError` if price is zero or negative
+
+**Examples:**
+
+```typescript
+import { money, currentYield } from "monetra";
+
+const coupon = money("50.00", "USD");
+const price = money("980.00", "USD");
+
+const yield = currentYield(coupon, price);
+console.log(`Current Yield: ${(yield * 100).toFixed(2)}%`); // "Current Yield: 5.10%"
 ```
 
 ### npv() {#npv}

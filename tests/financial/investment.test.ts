@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { npv, irr, roi } from "../../src/financial/investment";
+import { npv, irr, roi, currentYield } from "../../src/financial/investment";
 import { Money } from "../../src/money/Money";
 import { USD, EUR } from "../../src/currency/iso4217";
 
@@ -55,5 +55,41 @@ describe("Financial - Investment", () => {
     const rate = irr(cashFlows);
     // Approx 23.38%
     expect(rate).toBeCloseTo(0.23375, 4);
+  });
+
+  it("should calculate current yield for bond at par", () => {
+    const coupon = Money.fromMajor("50.00", USD);
+    const price = Money.fromMajor("1000.00", USD);
+    expect(currentYield(coupon, price)).toBe(0.05);
+  });
+
+  it("should calculate current yield for bond at premium", () => {
+    const coupon = Money.fromMajor("50.00", USD);
+    const price = Money.fromMajor("1100.00", USD);
+    expect(currentYield(coupon, price)).toBeCloseTo(0.04545, 5);
+  });
+
+  it("should calculate current yield for bond at discount", () => {
+    const coupon = Money.fromMajor("50.00", USD);
+    const price = Money.fromMajor("900.00", USD);
+    expect(currentYield(coupon, price)).toBeCloseTo(0.05556, 5);
+  });
+
+  it("should throw error for currency mismatch in current yield", () => {
+    const coupon = Money.fromMajor("50.00", USD);
+    const price = Money.fromMajor("1000.00", EUR);
+    expect(() => currentYield(coupon, price)).toThrow(/Currency mismatch/);
+  });
+
+  it("should throw error for zero price in current yield", () => {
+    const coupon = Money.fromMajor("50.00", USD);
+    const price = Money.fromMajor("0.00", USD);
+    expect(() => currentYield(coupon, price)).toThrow(/Current price must be positive/);
+  });
+
+  it("should throw error for negative price in current yield", () => {
+    const coupon = Money.fromMajor("50.00", USD);
+    const price = Money.fromMajor("-1000.00", USD);
+    expect(() => currentYield(coupon, price)).toThrow(/Current price must be positive/);
   });
 });
