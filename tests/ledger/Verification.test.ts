@@ -10,6 +10,7 @@ describe("Ledger Verification", () => {
   afterEach(() => {
     vi.unstubAllGlobals();
     vi.restoreAllMocks();
+    delete (globalThis as any).__MONETRA_DISABLE_NODE_CRYPTO__;
   });
 
   it("should use an injected hash function (sync) for deterministic output", async () => {
@@ -91,7 +92,20 @@ describe("Ledger Verification", () => {
     vi.resetModules();
     delete (globalThis as any).__MONETRA_DISABLE_NODE_CRYPTO__;
 
-    const subtle = (globalThis as any).crypto?.subtle;
+    // Ensure crypto.subtle exists so we can spy on it
+    if (!(globalThis as any).crypto?.subtle) {
+      const mockSubtle = { digest: vi.fn() };
+      if (!(globalThis as any).crypto) {
+        vi.stubGlobal("crypto", { subtle: mockSubtle });
+      } else {
+        Object.defineProperty((globalThis as any).crypto, "subtle", {
+          value: mockSubtle,
+          configurable: true,
+        });
+      }
+    }
+
+    const subtle = (globalThis as any).crypto.subtle;
     expect(subtle).toBeTruthy();
 
     const digestSpy = vi
@@ -178,7 +192,20 @@ describe("Ledger Verification", () => {
     const bytes = new Uint8Array(32);
     for (let i = 0; i < bytes.length; i++) bytes[i] = i;
 
-    const subtle = (globalThis as any).crypto?.subtle;
+    // Ensure crypto.subtle exists
+    if (!(globalThis as any).crypto?.subtle) {
+      const mockSubtle = { digest: vi.fn() };
+      if (!(globalThis as any).crypto) {
+        vi.stubGlobal("crypto", { subtle: mockSubtle });
+      } else {
+        Object.defineProperty((globalThis as any).crypto, "subtle", {
+          value: mockSubtle,
+          configurable: true,
+        });
+      }
+    }
+
+    const subtle = (globalThis as any).crypto.subtle;
     expect(subtle).toBeTruthy();
 
     const digestSpy = vi
