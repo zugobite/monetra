@@ -1,6 +1,6 @@
-# Library Comparison
+# Framework & Library Comparison
 
-This document provides a technical comparison between Monetra and other JavaScript/TypeScript money handling libraries. Each library has its strengths and is suited for different use cases.
+This document provides a technical comparison between Monetra and other JavaScript/TypeScript money handling libraries. Monetra positions itself as a comprehensive framework while others focus on specific aspects of money handling.
 
 ---
 
@@ -17,15 +17,17 @@ This document provides a technical comparison between Monetra and other JavaScri
 
 ## Overview {#overview}
 
-| Library     | Version | Size (minified) | TypeScript      | Decimal Approach               |
-| ----------- | ------- | --------------- | --------------- | ------------------------------ |
-| Monetra     | 2.x     | ~15 KB          | Native          | Integer (BigInt)               |
-| Dinero.js   | 2.x     | ~12 KB          | Native          | Integer (BigInt)               |
-| currency.js | 2.x     | ~3 KB           | Types available | Floating-point with correction |
-| big.js      | 6.x     | ~8 KB           | Types available | Arbitrary precision decimal    |
-| decimal.js  | 10.x    | ~32 KB          | Types available | Arbitrary precision decimal    |
-| js-money    | 0.7.x   | ~6 KB           | Types available | Floating-point                 |
-| money-math  | 2.x     | ~2 KB           | Types available | Arbitrary precision decimal    |
+| Library/Framework | Version | Size (minified) | TypeScript      | Decimal Approach               | Scope        |
+| ----------------- | ------- | --------------- | --------------- | ------------------------------ | ------------ |
+| **Monetra**       | 2.x     | ~15 KB          | Native          | Integer (BigInt)               | **Framework** |
+| Dinero.js         | 2.x     | ~12 KB          | Native          | Integer (BigInt)               | Library      |
+| currency.js       | 2.x     | ~3 KB           | Types available | Floating-point with correction | Library      |
+| big.js            | 6.x     | ~8 KB           | Types available | Arbitrary precision decimal    | Library      |
+| decimal.js        | 10.x    | ~32 KB          | Types available | Arbitrary precision decimal    | Library      |
+| js-money          | 0.7.x   | ~6 KB           | Types available | Floating-point                 | Library      |
+| money-math        | 2.x     | ~2 KB           | Types available | Arbitrary precision decimal    | Library      |
+
+**Note:** Monetra is classified as a framework because it provides integrated components (money handling, ledgers, financial calculations, currency conversion) that work together, not just money arithmetic.
 
 ---
 

@@ -7,7 +7,7 @@ import {
   USD,
   EUR,
   registerCurrency,
-} from "../src";
+} from "../../src";
 
 describe("Wallet Features", () => {
   it("should create money using helper and string currency", () => {

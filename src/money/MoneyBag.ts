@@ -50,7 +50,7 @@ export class MoneyBag {
     return (
       this.contents.get(code) ||
       Money.zero(
-        typeof currency === "string" ? getCurrency(currency) : currency
+        typeof currency === "string" ? getCurrency(currency) : currency,
       )
     );
   }

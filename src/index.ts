@@ -21,7 +21,7 @@ export * from "./format/parser";
  */
 export function money(
   amount: number | bigint | string,
-  currency: string | Currency
+  currency: string | Currency,
 ): Money {
   if (typeof amount === "string") {
     return Money.fromMajor(amount, currency);

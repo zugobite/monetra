@@ -30,7 +30,7 @@ export function subtract(a: bigint, b: bigint): bigint {
 export function multiply(
   amount: bigint,
   multiplier: string | number,
-  rounding?: RoundingMode
+  rounding?: RoundingMode,
 ): bigint {
   const { numerator, denominator } = parseMultiplier(multiplier);
 
@@ -46,7 +46,7 @@ export function multiply(
   if (!rounding) {
     throw new RoundingRequiredError(
       "multiply",
-      Number(product) / Number(denominator)
+      Number(product) / Number(denominator),
     );
   }
 
@@ -65,7 +65,7 @@ export function multiply(
 export function divide(
   amount: bigint,
   divisor: string | number,
-  rounding?: RoundingMode
+  rounding?: RoundingMode,
 ): bigint {
   const { numerator, denominator } = parseMultiplier(divisor);
 
@@ -79,7 +79,10 @@ export function divide(
   }
 
   if (!rounding) {
-    throw new RoundingRequiredError("divide", Number(product) / Number(numerator));
+    throw new RoundingRequiredError(
+      "divide",
+      Number(product) / Number(numerator),
+    );
   }
 
   return divideWithRounding(product, numerator, rounding);

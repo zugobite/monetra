@@ -1,16 +1,56 @@
 # Best Practices
 
-This guide covers recommended patterns, anti-patterns to avoid, testing strategies, and performance tips for building reliable financial applications with Monetra.
+This guide covers recommended patterns, anti-patterns to avoid, testing strategies, and performance tips for building reliable financial applications with the Monetra framework.
 
 ---
 
 ## Table of Contents
 
+- [Framework Organization](#framework-organization)
 - [Design Patterns](#patterns)
 - [Anti-Patterns to Avoid](#anti-patterns)
 - [Testing Money](#testing)
 - [Performance Tips](#performance)
 - [Production Checklist](#production)
+
+---
+
+## Framework Organization {#framework-organization}
+
+### Modular Imports for Optimal Bundle Size
+
+Monetra supports both main exports and subpath exports. Use subpath exports in production for optimal tree-shaking:
+
+```typescript
+// ✅ Good: Subpath exports (optimal for tree-shaking)
+import { Ledger } from "monetra/ledger";
+import { loan, npv, irr } from "monetra/financial";
+import { defineToken } from "monetra/tokens";
+
+// ✅ Also good: Main export (convenient for development)
+import { money, Money, futureValue, Ledger } from "monetra";
+
+// ❌ Avoid: Importing entire framework when only using specific modules
+import * as Monetra from "monetra";
+```
+
+### Feature-Based Architecture
+
+Organize your application code by feature, with each feature importing only the Monetra components it needs:
+
+```
+src/
+  features/
+    payments/
+      - usePayments.ts         (imports: money, Ledger)
+      - PaymentService.ts      (imports: Ledger, Converter)
+    investments/
+      - useInvestments.ts      (imports: money, futureValue, npv)
+      - InvestmentCalc.ts      (imports: financial module)
+    billing/
+      - useBilling.ts          (imports: money, pmt, loan)
+      - BillingService.ts      (imports: Ledger)
+```
 
 ---
 

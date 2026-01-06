@@ -1,9 +1,9 @@
 import { describe, it, expect, beforeAll } from "vitest";
 import * as fc from "fast-check";
-import { Money } from "../src/money/Money";
-import { RoundingMode } from "../src/rounding/strategies";
-import { registerCurrency } from "../src/currency/registry";
-import { USD } from "../src/currency/iso4217";
+import { Money } from "../../src/money/Money";
+import { RoundingMode } from "../../src/rounding/strategies";
+import { registerCurrency } from "../../src/currency/registry";
+import { USD } from "../../src/currency/iso4217";
 
 /**
  * Property-based tests for Money arithmetic operations.

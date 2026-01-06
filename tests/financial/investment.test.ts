@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import { npv, irr, roi, currentYield } from "../../src/financial/investment";
 import { Money } from "../../src/money/Money";
 import { USD, EUR } from "../../src/currency/iso4217";
+import { CurrencyMismatchError } from "../../src/errors/CurrencyMismatchError";
 
 describe("Financial - Investment", () => {
   it("should calculate ROI", () => {
@@ -25,7 +26,17 @@ describe("Financial - Investment", () => {
   it("should throw error for currency mismatch in ROI", () => {
     const initial = Money.fromMajor("1000.00", USD);
     const final = Money.fromMajor("1150.00", EUR);
-    expect(() => roi(initial, final)).toThrow(/Currency mismatch/);
+
+    try {
+      roi(initial, final);
+      expect.unreachable();
+    } catch (error) {
+      expect(error).toBeInstanceOf(CurrencyMismatchError);
+      const err = error as CurrencyMismatchError;
+      // This function defines the order explicitly: expected = initial, received = final
+      expect(err.expected).toBe("USD");
+      expect(err.received).toBe("EUR");
+    }
   });
 
   it("should calculate NPV", () => {
@@ -44,6 +55,10 @@ describe("Financial - Investment", () => {
     expect(result.format()).toBe("$146.92");
   });
 
+  it("should throw error for empty cash flows in NPV", () => {
+    expect(() => npv(0.1, [])).toThrow(/At least one cash flow required/);
+  });
+
   it("should calculate IRR", () => {
     const cashFlows = [
       Money.fromMajor("-1000.00", USD),
@@ -55,6 +70,23 @@ describe("Financial - Investment", () => {
     const rate = irr(cashFlows);
     // Approx 23.38%
     expect(rate).toBeCloseTo(0.23375, 4);
+
+    // Returned rate should approximately zero out NPV
+    const values = cashFlows.map((cf) => Number(cf.minor));
+    const npvAt = (r: number) =>
+      values.reduce((sum, v, i) => sum + v / Math.pow(1 + r, i), 0);
+    expect(npvAt(rate)).toBeCloseTo(0, 2);
+  });
+
+  it("should throw when IRR does not converge", () => {
+    // All-positive cash flows cannot have a valid IRR (no sign change)
+    const cashFlows = [
+      Money.fromMajor("100.00", USD),
+      Money.fromMajor("100.00", USD),
+      Money.fromMajor("100.00", USD),
+    ];
+
+    expect(() => irr(cashFlows, 0.1)).toThrow(/IRR calculation did not converge/);
   });
 
   it("should calculate current yield for bond at par", () => {

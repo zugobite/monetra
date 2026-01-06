@@ -1,5 +1,5 @@
-import { describe, it, expect } from "vitest";
-import { Money, RoundingMode, USD, ZAR } from "../src";
+import { describe, it, expect, vi } from "vitest";
+import { Money, RoundingMode, USD, ZAR } from "../../src";
 
 describe("Money Utilities", () => {
   describe("divide", () => {
@@ -11,7 +11,11 @@ describe("Money Utilities", () => {
 
     it("should throw on division by zero", () => {
       const m = Money.fromMajor("10.00", USD);
-      expect(() => m.divide(0)).toThrow("Division by zero");
+      // Check specifically for the text to ensure the guard is hit
+      expect(() => m.divide(0)).toThrow(/Division by zero/);
+      // Check string input to kill mutants that might skip string verification
+      expect(() => m.divide("0")).toThrow(/Division by zero/);
+      expect(() => m.divide(0n as any)).toThrow(/Division by zero/);
     });
 
     it("should handle rounding", () => {
@@ -60,18 +64,23 @@ describe("Money Utilities", () => {
 
   describe("fromFloat", () => {
     it("should create from float", () => {
-      const m = Money.fromFloat(10.5, USD);
+      // Suppress warning for this test to keep output clean
+      const m = Money.fromFloat(10.5, USD, { suppressWarning: true });
       expect(m.minor).toBe(1050n);
     });
 
-    it("should warn about precision", () => {
-      // Mock console.warn
-      const warn = console.warn;
-      console.warn = () => {}; // no-op
-      // We can't easily test console output without spying, but we can ensure it doesn't throw
-      const m = Money.fromFloat(10.5, USD);
-      expect(m.minor).toBe(1050n);
-      console.warn = warn;
+    it("should warn about precision by default", () => {
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+      Money.fromFloat(10.5, USD);
+      expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("may lose precision"));
+      warnSpy.mockRestore();
+    });
+
+    it("should allow suppressing precision warning", () => {
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+      Money.fromFloat(10.5, USD, { suppressWarning: true });
+      expect(warnSpy).not.toHaveBeenCalled();
+      warnSpy.mockRestore();
     });
   });
 
@@ -81,12 +90,30 @@ describe("Money Utilities", () => {
       const b = Money.fromMajor("5.00", USD);
       const c = Money.fromMajor("10.00", USD);
 
-      expect(a.greaterThanOrEqual(b)).toBe(true);
-      expect(a.greaterThanOrEqual(c)).toBe(true);
-      expect(b.lessThanOrEqual(a)).toBe(true);
+      // Equality
+      expect(a.equals(c)).toBe(true);
+      expect(a.equals(b)).toBe(false);
+
+      // Compare returns
       expect(a.compare(b)).toBe(1);
       expect(b.compare(a)).toBe(-1);
       expect(a.compare(c)).toBe(0);
+
+      // Greater/Less Than
+      expect(a.greaterThan(b)).toBe(true);
+      expect(b.greaterThan(a)).toBe(false);
+
+      expect(b.lessThan(a)).toBe(true);
+      expect(a.lessThan(b)).toBe(false);
+
+      // Inclusive Comparison
+      expect(a.greaterThanOrEqual(b)).toBe(true);
+      expect(a.greaterThanOrEqual(c)).toBe(true);
+      expect(b.greaterThanOrEqual(a)).toBe(false); // Essential
+
+      expect(b.lessThanOrEqual(a)).toBe(true);
+      expect(c.lessThanOrEqual(a)).toBe(true);
+      expect(a.lessThanOrEqual(b)).toBe(false); // Essential
     });
 
     it("should check positive", () => {

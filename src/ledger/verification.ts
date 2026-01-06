@@ -12,8 +12,14 @@ let hashFunction: ((data: string) => string | Promise<string>) | null = null;
 function getHashFunction(): (data: string) => string | Promise<string> {
   if (hashFunction) return hashFunction;
 
+  // Private escape hatch for tests to force the SubtleCrypto path.
+  // This does not affect normal usage unless explicitly set.
+  const disableNodeCrypto =
+    (globalThis as unknown as { __MONETRA_DISABLE_NODE_CRYPTO__?: boolean })
+      .__MONETRA_DISABLE_NODE_CRYPTO__ === true;
+
   // Try Node.js crypto first
-  if (typeof globalThis !== "undefined") {
+  if (!disableNodeCrypto && typeof globalThis !== "undefined") {
     try {
       // Dynamic import to avoid bundler issues
       const nodeCrypto = require("crypto");
@@ -39,7 +45,7 @@ function getHashFunction(): (data: string) => string | Promise<string> {
       const dataBuffer = encoder.encode(data);
       const hashBuffer = await globalThis.crypto.subtle.digest(
         "SHA-256",
-        dataBuffer
+        dataBuffer,
       );
       const hashArray = Array.from(new Uint8Array(hashBuffer));
       return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
@@ -50,7 +56,7 @@ function getHashFunction(): (data: string) => string | Promise<string> {
   // No crypto available
   throw new Error(
     "No cryptographic hash function available. " +
-      "Ensure you are running in Node.js or a browser with SubtleCrypto support."
+      "Ensure you are running in Node.js or a browser with SubtleCrypto support.",
   );
 }
 
@@ -58,7 +64,7 @@ function getHashFunction(): (data: string) => string | Promise<string> {
  * Allows injecting a custom hash function for testing or special environments.
  */
 export function setHashFunction(
-  fn: (data: string) => string | Promise<string>
+  fn: (data: string) => string | Promise<string>,
 ): void {
   hashFunction = fn;
 }
@@ -109,7 +115,7 @@ export function generateHashSync(data: unknown): string {
   if (result instanceof Promise) {
     throw new Error(
       "Synchronous hashing not available in this environment. " +
-        "Use generateHash() with await instead."
+        "Use generateHash() with await instead.",
     );
   }
   return result;

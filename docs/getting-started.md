@@ -1,6 +1,6 @@
 # Getting Started
 
-This guide will help you install Monetra and start working with monetary values in your JavaScript or TypeScript project.
+This guide will help you install Monetra and start building financially accurate applications with the framework's integrated components.
 
 ---
 
@@ -17,6 +17,28 @@ yarn add monetra
 
 # pnpm
 pnpm add monetra
+```
+
+**Requirements:** Node.js 18+ or modern browsers with BigInt support.
+
+---
+
+## Framework Overview
+
+Monetra provides modular access to its components through the main export and specialized subpath exports:
+
+```typescript
+// Core money and financial functions
+import { money, Money, futureValue, pmt } from "monetra";
+
+// Transaction ledger (also available via subpath)
+import { Ledger } from "monetra/ledger";
+
+// Financial calculations (also available via subpath)
+import { loan, npv, irr } from "monetra/financial";
+
+// Custom token definitions (also available via subpath)
+import { defineToken } from "monetra/tokens";
 ```
 
 ---

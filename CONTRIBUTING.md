@@ -1,14 +1,18 @@
 # Contributing to Monetra
 
-First off, thanks for taking the time to contribute! Monetra is a critical financial library, and we value correctness above all else.
+First off, thanks for taking the time to contribute! Monetra is a critical financial framework, and we value correctness above all else.
 
 ## How to Contribute
 
 1.  **Fork the repository**
-2.  **Create your feature branch** (`git checkout -b feature/amazing-feature`)
-3.  **Commit your changes** (`git commit -m 'Add amazing feature'`)
-4.  **Push to the branch** (`git push origin feature/amazing-feature`)
-5.  **Open a Pull Request**
+2.  **Checkout the target version branch**
+    *   Identify the version you are working on (e.g., `v2.2.0`).
+    *   Checkout that branch from your fork.
+    *   *Do not target `main` or `dev` unless specifically instructed.*
+3.  **Create your feature branch** from that version branch (`git checkout -b feature/amazing-feature`)
+4.  **Commit your changes** (`git commit -m 'feat: add amazing feature'`)
+5.  **Push to the branch** (`git push origin feature/amazing-feature`)
+6.  **Open a Pull Request** targeting the version branch you started from.
 
 ## Guidelines
 
@@ -29,9 +33,13 @@ We use [GitHub Projects](https://github.com/users/zugobite/projects/2) to track 
 
 ### Testing
 
-- **Correctness is paramount.**
+- **Correctness and Rigor are paramount.**
+- Since Monetra is a financial framework, we uphold strict standards for testing and reliability.
 - All new features must include comprehensive unit tests.
+- **Work will not be merged if it does not pass all coverage and mutation tests.**
 - Run `pnpm test` to verify your changes.
+- Run `pnpm test:coverage` to check code coverage.
+- Run `pnpm test:mutation` to run mutation testing.
 - Ensure 100% test coverage for new logic.
 
 ### Documentation

@@ -16,7 +16,7 @@ export function roi(initialValue: Money, finalValue: Money): number {
   if (initialValue.currency.code !== finalValue.currency.code) {
     throw new CurrencyMismatchError(
       initialValue.currency.code,
-      finalValue.currency.code
+      finalValue.currency.code,
     );
   }
 
@@ -29,7 +29,7 @@ export function roi(initialValue: Money, finalValue: Money): number {
  */
 export function npv(
   discountRate: number,
-  cashFlows: Money[] // First is initial investment (usually negative)
+  cashFlows: Money[], // First is initial investment (usually negative)
 ): Money {
   if (cashFlows.length === 0) {
     throw new Error("At least one cash flow required");
@@ -68,6 +68,7 @@ export function irr(cashFlows: Money[], guess: number = 0.1): number {
     for (let j = 0; j < values.length; j++) {
       const denominator = Math.pow(1 + rate, j);
       npvValue += values[j] / denominator;
+
       if (j > 0) {
         derivative -= (j * values[j]) / Math.pow(1 + rate, j + 1);
       }
@@ -99,7 +100,7 @@ export function currentYield(annualCoupon: Money, currentPrice: Money): number {
   if (annualCoupon.currency.code !== currentPrice.currency.code) {
     throw new CurrencyMismatchError(
       annualCoupon.currency.code,
-      currentPrice.currency.code
+      currentPrice.currency.code,
     );
   }
 

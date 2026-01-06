@@ -73,7 +73,10 @@ export class Ledger {
    * Records a transaction in the ledger (async version for browser support).
    * Returns the created entry for reference.
    */
-  async recordAsync(money: Money, metadata: TransactionMetadata): Promise<Entry> {
+  async recordAsync(
+    money: Money,
+    metadata: TransactionMetadata,
+  ): Promise<Entry> {
     if (money.currency.code !== this.currency) {
       throw new CurrencyMismatchError(this.currency, money.currency.code);
     }
@@ -98,7 +101,7 @@ export class Ledger {
 
     const entry: Entry = {
       ...content,
-      hash: typeof hash === "string" ? hash : await hash,
+      hash,
     };
 
     this.entries.push(Object.freeze(entry));
@@ -112,7 +115,7 @@ export class Ledger {
   getBalance(): Money {
     return this.entries.reduce(
       (balance, entry) => balance.add(entry.money),
-      Money.zero(this.currency)
+      Money.zero(this.currency),
     );
   }
 
@@ -150,7 +153,7 @@ export class Ledger {
         return false;
       if (filter.tags && entry.metadata.tags) {
         const hasTag = filter.tags.some((tag) =>
-          entry.metadata.tags?.includes(tag)
+          entry.metadata.tags?.includes(tag),
         );
         if (!hasTag) return false;
       }
@@ -199,7 +202,7 @@ export class Ledger {
       balance: this.getBalance(),
       currency: this.currency,
       createdAt: new Date(),
-      checksum: typeof checksum === "string" ? checksum : await checksum,
+      checksum,
     };
   }
 
