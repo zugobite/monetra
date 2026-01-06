@@ -63,13 +63,10 @@ export function parseLocaleString(
   normalized = normalized.replace(/[-()]/g, "");
 
   // Remove all grouping separators
-  const groupRegex = new RegExp(`\\${groupSeparator}`, "g");
-  normalized = normalized.replace(groupRegex, "");
+  normalized = normalized.split(groupSeparator).join("");
 
   // Replace locale decimal separator with standard period
-  if (decimalSeparator !== ".") {
-    normalized = normalized.replace(decimalSeparator, ".");
-  }
+  normalized = normalized.split(decimalSeparator).join(".");
 
   return isNegative ? `-${normalized}` : normalized;
 }
@@ -120,6 +117,11 @@ export function parseToMinor(amount: string, currency: Currency): bigint {
     throw new Error("Invalid characters in amount");
   }
 
+  // Reject inputs with no digits (e.g. "-" or "")
+  if (!/[0-9]/.test(amount)) {
+    throw new Error("Invalid format");
+  }
+
   const parts = amount.split(".");
   if (parts.length > 2) {
     throw new Error("Invalid format: multiple decimal points");
@@ -138,11 +140,6 @@ export function parseToMinor(amount: string, currency: Currency): bigint {
   const paddedFractional = fractionalPart.padEnd(currency.decimals, "0");
 
   const combined = integerPart + paddedFractional;
-
-  // Handle edge case where integer part is just "-"
-  if (combined === "-" || combined === "") {
-    throw new Error("Invalid format");
-  }
 
   return BigInt(combined);
 }

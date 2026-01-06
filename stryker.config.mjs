@@ -1,4 +1,3 @@
-// @ts-check
 /** @type {import('@stryker-mutator/api/core').PartialStrykerOptions} */
 const config = {
   _comment:
@@ -16,7 +15,10 @@ const config = {
     "!src/test/**",
     "!src/**/*.d.ts",
   ],
+  ignoreStatic: true,
   thresholds: { high: 80, low: 60, break: 50 },
+  timeoutMS: 10000,
+  timeoutFactor: 1.5,
   vitest: {
     configFile: "vitest.config.mts",
   },

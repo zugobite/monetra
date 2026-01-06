@@ -8,6 +8,7 @@ import {
 } from "../../src/financial/loan";
 import { Money } from "../../src/money/Money";
 import { USD } from "../../src/currency/iso4217";
+import { RoundingMode } from "../../src/rounding/strategies";
 
 describe("Financial - Loan", () => {
   it("should calculate loan schedule", () => {
@@ -76,6 +77,10 @@ describe("Financial - Loan", () => {
     expect(interest.equals(sum)).toBe(true);
   });
 
+  it("should throw error for empty schedule in totalInterestFromSchedule", () => {
+    expect(() => totalInterestFromSchedule([])).toThrow(/Schedule must have at least one entry/);
+  });
+
   it("should return zero interest for zero-interest loans", () => {
     const principal = Money.fromMajor("10000.00", USD);
 
@@ -86,6 +91,44 @@ describe("Financial - Loan", () => {
     });
 
     expect(interest.isZero()).toBe(true);
+  });
+
+  it("should calculate zero-interest loan payments using rounding", () => {
+    const principal = Money.fromMajor("100.01", USD);
+
+    const scheduleHalfEven = loan({
+      principal,
+      annualRate: 0,
+      periods: 2,
+      rounding: RoundingMode.HALF_EVEN,
+    });
+
+    const scheduleHalfUp = loan({
+      principal,
+      annualRate: 0,
+      periods: 2,
+      rounding: RoundingMode.HALF_UP,
+    });
+
+    // 100.01 / 2 = 50.005
+    // HALF_EVEN -> 50.00, HALF_UP -> 50.01
+    expect(scheduleHalfEven[0].payment.format()).toBe("$50.00");
+    expect(scheduleHalfUp[0].payment.format()).toBe("$50.01");
+
+    // Interest should be zero for all periods when annualRate is zero
+    expect(scheduleHalfEven.every((e) => e.interest.isZero())).toBe(true);
+    expect(scheduleHalfUp.every((e) => e.interest.isZero())).toBe(true);
+  });
+
+  it("should charge interest for non-zero interest loans", () => {
+    const principal = Money.fromMajor("1000.00", USD);
+    const schedule = loan({
+      principal,
+      annualRate: 0.12,
+      periods: 12,
+    });
+
+    expect(schedule[0].interest.isZero()).toBe(false);
   });
 
   describe("Interest-Only Loans", () => {
@@ -148,5 +191,49 @@ describe("Financial - Loan", () => {
       // Monthly = 5,000,000 × (0.055 / 12) = 5,000,000 × 0.00458333... = 22,916.67
       expect(monthlyPayment.format()).toBe("$22,916.67");
     });
+  });
+
+  it("should handle edge case where balance might go negative in amortization", () => {
+    // Create a scenario with very small principal and high interest that could cause
+    // computational rounding to produce a slightly negative balance
+    const principal = Money.fromMajor("1.00", USD);
+    const schedule = loan({
+      principal,
+      annualRate: 0.99, // Very high rate
+      periods: 2,
+      rounding: RoundingMode.HALF_UP,
+    });
+
+    // All balances should be >= 0
+    schedule.forEach((entry) => {
+      expect(entry.balance.isNegative()).toBe(false);
+    });
+
+    // Final balance should be zero
+    expect(schedule[schedule.length - 1].balance.isZero()).toBe(true);
+  });
+
+  it("should handle balance going negative due to rounding in principal calculation", () => {
+    // Create a very specific scenario to trigger line 88's isNegative() check
+    // We need: balance.subtract(principalPayment) to go negative in a non-final period
+    //
+    // Use CEILING rounding to make payment slightly too large, combined with
+    // small principal and few periods to exaggerate rounding effects
+    
+    const principal = Money.fromMajor("0.04", USD); // 4 cents
+    const schedule = loan({
+      principal,
+      annualRate: 0.01, // Small interest
+      periods: 3,
+      periodsPerYear: 1, // Annual periods (makes rate/period larger)
+      rounding: RoundingMode.CEIL, // Round up to make payment larger
+    });
+
+    // Verify all balances are non-negative (line 88 clamps negative to zero)
+    schedule.forEach((entry) => {
+      expect(entry.balance.isNegative()).toBe(false);
+    });
+
+    expect(schedule[schedule.length - 1].balance.isZero()).toBe(true);
   });
 });

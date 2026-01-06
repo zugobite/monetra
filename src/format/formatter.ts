@@ -97,7 +97,7 @@ export function format(money: Money, options?: FormatOptions): string {
       style: "currency",
       currency: money.currency.code,
       currencyDisplay: display,
-    }).formatToParts(isNegative ? -1 : 1);
+    }).formatToParts(isNegative ? -1234.5 : 1234.5);
   } catch (e) {
     // Fallback for custom currencies or invalid codes
     const symbol =
@@ -112,30 +112,45 @@ export function format(money: Money, options?: FormatOptions): string {
 
   let result = "";
   let numberInserted = false;
-  let hasMinusSign = false;
 
   for (const part of templateParts) {
-    if (part.type === "minusSign") {
-      hasMinusSign = true;
-      // Skip the minus sign, we'll handle it later for accounting format
-      if (!useAccounting) {
-        result += part.value;
+    switch (part.type) {
+      case "minusSign": {
+        // Skip the minus sign, we'll handle it later for accounting format
+        if (!useAccounting) {
+          result += part.value;
+        }
+        break;
       }
-      continue;
-    }
-    if (["integer", "group", "decimal", "fraction"].includes(part.type)) {
-      if (!numberInserted) {
-        result += absString;
-        numberInserted = true;
+
+      case "integer": {
+        if (!numberInserted) {
+          result += absString;
+          numberInserted = true;
+        }
+        break;
       }
-    } else if (part.type === "currency") {
-      if (display === "symbol" && money.currency.symbol) {
-        result += money.currency.symbol;
-      } else {
-        result += part.value;
+
+      // Skip the remaining numeric parts, since we already inserted the full number string.
+      case "group":
+      case "decimal":
+      case "fraction": {
+        break;
       }
-    } else {
-      result += part.value; // literals, parentheses, etc.
+
+      case "currency": {
+        if (display === "symbol" && money.currency.symbol) {
+          result += money.currency.symbol;
+        } else {
+          result += part.value;
+        }
+        break;
+      }
+
+      default: {
+        result += part.value; // literals, parentheses, etc.
+        break;
+      }
     }
   }
 

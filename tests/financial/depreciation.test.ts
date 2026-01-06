@@ -3,6 +3,8 @@ import { straightLineDepreciation } from "../../src/financial/depreciation";
 import { Money } from "../../src/money/Money";
 import { USD, EUR } from "../../src/currency/iso4217";
 import { RoundingMode } from "../../src/rounding/strategies";
+import { CurrencyMismatchError } from "../../src/errors/CurrencyMismatchError";
+import { InvalidArgumentError } from "../../src/errors/InvalidArgumentError";
 
 describe("Financial - Depreciation", () => {
   it("should calculate straight-line depreciation correctly", () => {
@@ -13,6 +15,7 @@ describe("Financial - Depreciation", () => {
     const result = straightLineDepreciation({ cost, salvageValue, usefulLife });
 
     expect(result.annualDepreciation.format()).toBe("$200.00");
+    expect(result.bookValueAtYear(0).equals(cost)).toBe(true);
     expect(result.bookValueAtYear(1).format()).toBe("$800.00");
     expect(result.bookValueAtYear(5).format()).toBe("$0.00");
   });
@@ -85,7 +88,26 @@ describe("Financial - Depreciation", () => {
   it("should throw error for currency mismatch", () => {
     const cost = Money.fromMajor("1000.00", USD);
     const salvageValue = Money.fromMajor("0.00", EUR);
-    expect(() => straightLineDepreciation({ cost, salvageValue, usefulLife: 5 })).toThrow(/Currency mismatch/);
+
+    try {
+      straightLineDepreciation({ cost, salvageValue, usefulLife: 5 });
+      expect.unreachable();
+    } catch (error) {
+      expect(error).toBeInstanceOf(CurrencyMismatchError);
+      const err = error as CurrencyMismatchError;
+      // This function defines the order explicitly: expected = cost, received = salvage
+      expect(err.expected).toBe("USD");
+      expect(err.received).toBe("EUR");
+    }
+  });
+
+  it("should throw error for negative year", () => {
+    const cost = Money.fromMajor("1000.00", USD);
+    const salvageValue = Money.fromMajor("0.00", USD);
+    const result = straightLineDepreciation({ cost, salvageValue, usefulLife: 5 });
+
+    expect(() => result.bookValueAtYear(-1)).toThrowError(InvalidArgumentError);
+    expect(() => result.bookValueAtYear(-1)).toThrow(/Year must be non-negative/);
   });
 
   it("should throw error for invalid useful life", () => {

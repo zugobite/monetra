@@ -12,8 +12,14 @@ let hashFunction: ((data: string) => string | Promise<string>) | null = null;
 function getHashFunction(): (data: string) => string | Promise<string> {
   if (hashFunction) return hashFunction;
 
+  // Private escape hatch for tests to force the SubtleCrypto path.
+  // This does not affect normal usage unless explicitly set.
+  const disableNodeCrypto =
+    (globalThis as unknown as { __MONETRA_DISABLE_NODE_CRYPTO__?: boolean })
+      .__MONETRA_DISABLE_NODE_CRYPTO__ === true;
+
   // Try Node.js crypto first
-  if (typeof globalThis !== "undefined") {
+  if (!disableNodeCrypto && typeof globalThis !== "undefined") {
     try {
       // Dynamic import to avoid bundler issues
       const nodeCrypto = require("crypto");

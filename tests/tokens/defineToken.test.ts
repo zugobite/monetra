@@ -13,6 +13,16 @@ describe("Tokens - defineToken", () => {
     expect(MY_TOKEN.code).toBe("MYT");
     expect(MY_TOKEN.symbol).toBe("T");
     expect(MY_TOKEN.decimals).toBe(6);
+    expect(MY_TOKEN.type).toBe("custom");
+  });
+
+  it("should throw error for invalid token definition", () => {
+    // @ts-ignore
+    expect(() => defineToken({})).toThrow("Token definition requires a code");
+    // @ts-ignore
+    expect(() => defineToken({ code: "TEST" })).toThrow("Token definition requires a symbol");
+    // @ts-ignore
+    expect(() => defineToken({ code: "TEST", symbol: "T" })).toThrow("Token definition requires decimals");
   });
 
   it("should work with Money", () => {
@@ -40,29 +50,34 @@ describe("Tokens - defineToken", () => {
     expect(ETH.symbol).toBe("Ξ");
     expect(ETH.decimals).toBe(18);
     expect(ETH.type).toBe("crypto");
-    // @ts-ignore
     expect(ETH.chainId).toBe(1);
-    // @ts-ignore
     expect(ETH.coingeckoId).toBe("ethereum");
 
     // BTC
     expect(BTC.code).toBe("BTC");
     expect(BTC.symbol).toBe("₿");
     expect(BTC.decimals).toBe(8);
-    // @ts-ignore
+    expect(BTC.type).toBe("crypto");
     expect(BTC.coingeckoId).toBe("bitcoin");
 
     // USDC
     expect(USDC.code).toBe("USDC");
-    // @ts-ignore
+    expect(USDC.symbol).toBe("USDC");
+    expect(USDC.decimals).toBe(6);
+    expect(USDC.type).toBe("crypto");
+    expect(USDC.chainId).toBe(1);
     expect(USDC.contractAddress).toBe("0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48");
-    // @ts-ignore
     expect(USDC.standard).toBe("ERC-20");
+    expect(USDC.coingeckoId).toBe("usd-coin");
 
     // USDT
     expect(USDT.code).toBe("USDT");
     expect(USDT.symbol).toBe("₮");
-    // @ts-ignore
+    expect(USDT.decimals).toBe(6);
+    expect(USDT.type).toBe("crypto");
+    expect(USDT.chainId).toBe(1);
     expect(USDT.contractAddress).toBe("0xdac17f958d2ee523a2206206994597c13d831ec7");
+    expect(USDT.standard).toBe("ERC-20");
+    expect(USDT.coingeckoId).toBe("tether");
   });
 });

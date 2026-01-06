@@ -68,6 +68,7 @@ export function irr(cashFlows: Money[], guess: number = 0.1): number {
     for (let j = 0; j < values.length; j++) {
       const denominator = Math.pow(1 + rate, j);
       npvValue += values[j] / denominator;
+
       if (j > 0) {
         derivative -= (j * values[j]) / Math.pow(1 + rate, j + 1);
       }

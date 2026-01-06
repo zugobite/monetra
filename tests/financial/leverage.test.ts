@@ -21,9 +21,19 @@ describe("Financial - Leverage Ratios", () => {
     expect(debtToEquity(debt, equity)).toBe(2.0);
   });
 
+  it("should throw if total equity is zero", () => {
+    const zeroEquity = Money.zero(USD);
+    expect(() => debtToEquity(debt, zeroEquity)).toThrow(/Total equity cannot be zero/);
+  });
+
   it("should calculate Debt-to-Assets ratio correctly", () => {
     // 200,000 / 300,000 = 0.666...
     expect(debtToAssets(debt, assets)).toBeCloseTo(0.6666666, 5);
+  });
+
+  it("should throw if total assets is zero", () => {
+    const zeroAssets = Money.zero(USD);
+    expect(() => debtToAssets(debt, zeroAssets)).toThrow(/Total assets cannot be zero/);
   });
 
   it("should calculate Infinity for zero interest expense", () => {
@@ -34,6 +44,11 @@ describe("Financial - Leverage Ratios", () => {
   it("should calculate Equity Multiplier correctly", () => {
     // 300,000 / 100,000 = 3.0
     expect(equityMultiplier(assets, equity)).toBe(3.0);
+  });
+
+  it("should throw if total equity is zero for equity multiplier", () => {
+    const zeroEquity = Money.zero(USD);
+    expect(() => equityMultiplier(assets, zeroEquity)).toThrow(/Total equity cannot be zero/);
   });
 
   it("should calculate all ratios using bundled function", () => {

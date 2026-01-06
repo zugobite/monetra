@@ -26,6 +26,10 @@ export function defineToken(definition: {
   standard?: string;
   coingeckoId?: string;
 }): TokenDefinition {
+  if (!definition.code) throw new Error("Token definition requires a code");
+  if (!definition.symbol) throw new Error("Token definition requires a symbol");
+  if (definition.decimals === undefined) throw new Error("Token definition requires decimals");
+
   const token: TokenDefinition = {
     code: definition.code.toUpperCase(),
     symbol: definition.symbol,

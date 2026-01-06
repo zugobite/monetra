@@ -98,7 +98,7 @@ export class Ledger {
 
     const entry: Entry = {
       ...content,
-      hash: typeof hash === "string" ? hash : await hash,
+      hash,
     };
 
     this.entries.push(Object.freeze(entry));
@@ -199,7 +199,7 @@ export class Ledger {
       balance: this.getBalance(),
       currency: this.currency,
       createdAt: new Date(),
-      checksum: typeof checksum === "string" ? checksum : await checksum,
+      checksum,
     };
   }
 

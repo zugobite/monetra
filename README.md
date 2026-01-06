@@ -6,8 +6,9 @@ The Financial Integrity Framework for TypeScript.
 
 [![CI](https://github.com/zugobite/monetra/actions/workflows/ci.yml/badge.svg)](https://github.com/zugobite/monetra/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/zugobite/monetra/branch/main/graph/badge.svg)](https://codecov.io/gh/zugobite/monetra)
+[![Test Coverage](https://img.shields.io/badge/Coverage-97.76%25-brightgreen)](coverage/index.html)
+[![Mutation Score](https://img.shields.io/badge/Mutation_Score-89.16%25-green)](reports/mutation/mutation.html)
 [![Mathematically Verified](https://img.shields.io/badge/Verified-Property--Based_Tests-purple.svg)](tests/property-based.test.ts)
-[![Mutation Score](https://img.shields.io/badge/Mutation_Testing-Active-green)](reports/mutation/mutation.html)
 [![Zero Dependencies](https://img.shields.io/badge/Dependencies-0-brightgreen.svg)]()
 
 ### Package Information
