@@ -1,8 +1,8 @@
 ![Monetra](./monetra.png)
 
-## Monetra
+# Monetra
 
-**A comprehensive TypeScript framework for building financial applications with precision and confidence.**
+A comprehensive TypeScript framework for building financial applications with precision and confidence.
 
 [![CI](https://github.com/zugobite/monetra/actions/workflows/ci.yml/badge.svg)](https://github.com/zugobite/monetra/actions/workflows/ci.yml)
 [![Test Coverage](https://img.shields.io/badge/Coverage-99.87%25-brightgreen)](coverage/index.html)
@@ -22,11 +22,11 @@
 
 ## Overview
 
-Monetra is a **zero-dependency TypeScript framework** that provides everything you need to build financially accurate applications. From precise money handling to transaction ledgers, from loan calculations to currency conversion—Monetra offers a complete, integrated solution.
+Monetra is a **zero-dependency TypeScript framework** that provides everything you need to build financially accurate applications. From precise money handling to transaction ledgers, from loan calculations to currency conversion - Monetra offers a complete, integrated solution.
 
 **Built for financial correctness:** By storing amounts in minor units (cents, satoshis, wei) as `BigInt`, Monetra eliminates floating-point precision errors that plague traditional approaches.
 
-While other libraries rely on floating-point math or simple wrappers, Monetra provides a full-stack architecture for the **lifecycle of value**: from safe storage and precise allocation to complex financial modeling and immutable audit logging.
+While other libraries rely on floating-point math or simple wrappers, Monetra provides a full stack architecture for the **lifecycle of value**: from safe storage and precise allocation to complex financial modeling and immutable audit logging.
 
 It bridges the gap between simple e-commerce math and complex ledger systems, offering a unified, type-safe environment for building:
 
@@ -62,14 +62,6 @@ Monetra is architected in three distinct layers to ensure separation of concerns
 ## Installation
 
 ```bash
-npm install monetra
-```
-
-```bash
-yarn add monetra
-```
-
-```bash
 pnpm add monetra
 ```
 
@@ -79,18 +71,20 @@ pnpm add monetra
 
 ## Why Monetra?
 
-Monetra is more than a money library—it's a complete financial framework designed to handle the full spectrum of monetary operations in modern applications.
+Monetra is more than a money library - it's a complete financial framework designed to handle the full spectrum of monetary operations in modern applications.
 
 ### Framework Capabilities
 
-**🎯 Core Money Operations**
+**Core Money Operations**
+
 - Integer-based storage (BigInt) eliminates floating-point errors
 - ISO 4217 currency support with automatic precision handling
 - Custom token definitions for cryptocurrencies (up to 18 decimals)
 - Explicit rounding strategies (6 modes: HALF_UP, HALF_DOWN, HALF_EVEN, FLOOR, CEIL, TRUNCATE)
-- Immutable API—all operations return new instances
+- Immutable API-all operations return new instances
 
-**📊 Financial Mathematics**
+**Financial Mathematics**
+
 - Compound interest calculations with flexible compounding periods
 - Loan amortization schedules and payment calculations
 - Present/future value computations
@@ -98,22 +92,25 @@ Monetra is more than a money library—it's a complete financial framework desig
 - Depreciation methods (straight-line, declining balance)
 - Bond yield calculations and leverage metrics
 
-**📒 Transaction Ledger System**
+**Transaction Ledger System**
+
 - Append-only transaction log with hash chain verification
 - Double-entry bookkeeping support
 - Auditable history with cryptographic integrity
 - Account balance tracking and reconciliation
 - Async transaction processing with event handling
 
-**💱 Currency Management**
+**Currency Management**
+
 - Multi-currency support with type-safe operations
 - Currency conversion with rate management
 - Historical exchange rate lookups
 - MoneyBag for aggregating different currencies
 - Mix-currency operation protection
 
-**🔧 Developer Experience**
-- Zero runtime dependencies—no supply chain risks
+**Developer Experience**
+
+- Zero runtime dependencies - no supply chain risks
 - Full TypeScript support with strict types
 - Comprehensive error handling with custom error classes
 - Extensive test coverage (>95%) and mutation testing
@@ -202,52 +199,6 @@ const isClean = bankLedger.verify(); // true
 
 ---
 
-## API Summary
-
-### Money Class
-
-| Method                              | Description                          |
-| ----------------------------------- | ------------------------------------ |
-| `money(amount, currency)`           | Create Money from string or number   |
-| `Money.fromMinor(cents, currency)`  | Create from minor units              |
-| `Money.fromMajor(amount, currency)` | Create from major units (string)     |
-| `Money.zero(currency)`              | Create zero amount                   |
-| `.add(other)`                       | Add two Money values                 |
-| `.subtract(other)`                  | Subtract Money values                |
-| `.multiply(factor, options?)`       | Multiply by scalar                   |
-| `.divide(divisor, options)`         | Divide by scalar (requires rounding) |
-| `.percentage(percent, rounding?)`   | Calculate percentage                 |
-| `.split(n)`                         | Split into n equal parts             |
-| `.allocate(ratios)`                 | Allocate by ratios                   |
-| `.format(options?)`                 | Format for display                   |
-| `.equals(other)`                    | Check equality                       |
-| `.lessThan(other)`                  | Compare values                       |
-| `.greaterThan(other)`               | Compare values                       |
-| `.isPositive()`                     | Check if positive                    |
-| `.isNegative()`                     | Check if negative                    |
-| `.isZero()`                         | Check if zero                        |
-
-### Financial Functions
-
-| Function                                  | Description                                   |
-| ----------------------------------------- | --------------------------------------------- |
-| `futureValue(principal, options)`         | Calculate future value with compound interest |
-| `presentValue(futureAmount, options)`     | Calculate present value                       |
-| `pmt(options)`                            | Calculate loan payment amount                 |
-| `loan(options)`                           | Generate amortization schedule                |
-| `npv(initialInvestment, cashFlows, rate)` | Net present value                             |
-| `irr(initialInvestment, cashFlows)`       | Internal rate of return                       |
-
-### Classes
-
-| Class       | Description                                   |
-| ----------- | --------------------------------------------- |
-| `Ledger`    | Append-only transaction log with verification |
-| `Converter` | Currency conversion with rate management      |
-| `MoneyBag`  | Multi-currency aggregation                    |
-
----
-
 ## Documentation
 
 Full documentation is available in the [docs](docs/index.md) directory:
@@ -280,6 +231,12 @@ pnpm test
 
 # Run property-based verification
 pnpm test:property
+
+# Run coverage report
+pnpm test:coverage
+
+# Run mutation testing
+pnpm test:mutation
 ```
 
 ---

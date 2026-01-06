@@ -5,7 +5,7 @@ export * from "./strategies";
 export function divideWithRounding(
   numerator: bigint,
   denominator: bigint,
-  mode: RoundingMode
+  mode: RoundingMode,
 ): bigint {
   if (denominator === 0n) {
     throw new Error("Division by zero");
@@ -18,7 +18,7 @@ export function divideWithRounding(
     return quotient;
   }
 
-  const isNegativeResult = (numerator < 0n) !== (denominator < 0n);
+  const isNegativeResult = numerator < 0n !== denominator < 0n;
   const isPositiveResult = !isNegativeResult;
 
   const absRemainder = remainder < 0n ? -remainder : remainder;

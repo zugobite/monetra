@@ -27,7 +27,7 @@ export interface LocaleParseOptions {
  */
 export function parseLocaleString(
   amount: string,
-  options: LocaleParseOptions
+  options: LocaleParseOptions,
 ): string {
   // Use Intl.NumberFormat to determine the locale's separators
   const parts = new Intl.NumberFormat(options.locale, {
@@ -51,7 +51,7 @@ export function parseLocaleString(
   // (shouldn't happen, but be defensive)
   if (groupSeparator === decimalSeparator) {
     throw new Error(
-      `Invalid locale configuration: group and decimal separators are the same for locale ${options.locale}`
+      `Invalid locale configuration: group and decimal separators are the same for locale ${options.locale}`,
     );
   }
 
@@ -87,7 +87,7 @@ export function parseLocaleString(
 export function parseLocaleToMinor(
   amount: string,
   currency: Currency,
-  options: LocaleParseOptions
+  options: LocaleParseOptions,
 ): bigint {
   const normalized = parseLocaleString(amount, options);
   return parseToMinor(normalized, currency);
@@ -132,7 +132,7 @@ export function parseToMinor(amount: string, currency: Currency): bigint {
 
   if (fractionalPart.length > currency.decimals) {
     throw new InvalidPrecisionError(
-      `Precision ${fractionalPart.length} exceeds currency decimals ${currency.decimals}`
+      `Precision ${fractionalPart.length} exceeds currency decimals ${currency.decimals}`,
     );
   }
 

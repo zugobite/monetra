@@ -14,7 +14,7 @@ export interface CompoundOptions {
  */
 export function futureValue(
   presentValue: Money,
-  options: CompoundOptions
+  options: CompoundOptions,
 ): Money {
   const {
     rate,
@@ -36,7 +36,7 @@ export function futureValue(
  */
 export function presentValue(
   futureVal: Money,
-  options: CompoundOptions
+  options: CompoundOptions,
 ): Money {
   const {
     rate,

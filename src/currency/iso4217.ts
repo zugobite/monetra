@@ -745,5 +745,3 @@ export const CURRENCIES: Record<string, Currency> = {
   ISK,
   MRU,
 };
-
-

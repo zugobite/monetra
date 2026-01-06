@@ -28,11 +28,21 @@ export interface DepreciationResult {
  * @throws {CurrencyMismatchError} If cost and salvage value currencies differ
  * @throws {InvalidArgumentError} If useful life is not positive or salvage value > cost
  */
-export function straightLineDepreciation(options: DepreciationOptions): DepreciationResult {
-  const { cost, salvageValue, usefulLife, rounding = RoundingMode.HALF_EVEN } = options;
+export function straightLineDepreciation(
+  options: DepreciationOptions,
+): DepreciationResult {
+  const {
+    cost,
+    salvageValue,
+    usefulLife,
+    rounding = RoundingMode.HALF_EVEN,
+  } = options;
 
   if (cost.currency.code !== salvageValue.currency.code) {
-    throw new CurrencyMismatchError(cost.currency.code, salvageValue.currency.code);
+    throw new CurrencyMismatchError(
+      cost.currency.code,
+      salvageValue.currency.code,
+    );
   }
 
   if (usefulLife <= 0) {

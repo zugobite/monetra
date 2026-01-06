@@ -48,7 +48,7 @@ export class Converter {
 
     if (fromRate === undefined || toRate === undefined) {
       throw new Error(
-        `Exchange rate missing for conversion from ${money.currency.code} to ${targetCurrency.code}`
+        `Exchange rate missing for conversion from ${money.currency.code} to ${targetCurrency.code}`,
       );
     }
 

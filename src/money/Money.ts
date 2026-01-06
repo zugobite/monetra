@@ -111,14 +111,14 @@ export class Money {
     options?: {
       rounding?: RoundingMode;
       suppressWarning?: boolean;
-    }
+    },
   ): Money {
     if (!options?.suppressWarning && process.env.NODE_ENV !== "production") {
       console.warn(
-        '[monetra] Money.fromFloat() may lose precision. ' +
+        "[monetra] Money.fromFloat() may lose precision. " +
           'Consider using Money.fromMajor("' +
           amount +
-          '", currency) instead.'
+          '", currency) instead.',
       );
     }
     const resolvedCurrency = Money.resolveCurrency(currency);
@@ -213,7 +213,7 @@ export class Money {
    */
   multiply(
     multiplier: string | number,
-    options?: { rounding?: RoundingMode }
+    options?: { rounding?: RoundingMode },
   ): Money {
     const result = multiply(this.minor, multiplier, options?.rounding);
     return new Money(result, this.currency);
@@ -230,7 +230,7 @@ export class Money {
    */
   divide(
     divisor: number | string,
-    options?: { rounding?: RoundingMode }
+    options?: { rounding?: RoundingMode },
   ): Money {
     if (divisor === 0 || divisor === "0") {
       throw new Error("Division by zero");
@@ -244,10 +244,7 @@ export class Money {
    * @returns A new Money instance with the absolute value.
    */
   abs(): Money {
-    return new Money(
-      this.minor < 0n ? -this.minor : this.minor,
-      this.currency
-    );
+    return new Money(this.minor < 0n ? -this.minor : this.minor, this.currency);
   }
 
   /**
@@ -370,7 +367,7 @@ export class Money {
    */
   percentage(
     percent: number,
-    rounding: RoundingMode = RoundingMode.HALF_EVEN
+    rounding: RoundingMode = RoundingMode.HALF_EVEN,
   ): Money {
     return this.multiply(percent / 100, { rounding });
   }
@@ -382,7 +379,7 @@ export class Money {
    */
   addPercent(
     percent: number,
-    rounding: RoundingMode = RoundingMode.HALF_EVEN
+    rounding: RoundingMode = RoundingMode.HALF_EVEN,
   ): Money {
     return this.add(this.percentage(percent, rounding));
   }
@@ -394,7 +391,7 @@ export class Money {
    */
   subtractPercent(
     percent: number,
-    rounding: RoundingMode = RoundingMode.HALF_EVEN
+    rounding: RoundingMode = RoundingMode.HALF_EVEN,
   ): Money {
     return this.subtract(this.percentage(percent, rounding));
   }
@@ -523,7 +520,11 @@ export class Money {
       typeof (value as Record<string, unknown>).currency === "string" &&
       typeof (value as Record<string, unknown>).precision === "number"
     ) {
-      const obj = value as { amount: string; currency: string; precision: number };
+      const obj = value as {
+        amount: string;
+        currency: string;
+        precision: number;
+      };
       return Money.fromMinor(BigInt(obj.amount), obj.currency);
     }
     return value;

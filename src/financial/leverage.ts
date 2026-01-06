@@ -83,7 +83,7 @@ export function interestCoverage(ebit: Money, interestExpense: Money): number {
  */
 export function equityMultiplier(
   totalAssets: Money,
-  totalEquity: Money
+  totalEquity: Money,
 ): number {
   assertSameCurrency(totalAssets, totalEquity);
   if (totalEquity.isZero()) {

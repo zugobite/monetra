@@ -182,4 +182,3 @@ export function interestOnlyPayment(options: InterestOnlyOptions): Money {
   const periodicRate = annualRate / periodsPerYear;
   return principal.multiply(periodicRate, { rounding });
 }
-
