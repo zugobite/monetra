@@ -66,7 +66,7 @@ jobs:
           echo "💡 **Note**: Significant performance changes (>20% regression) should be investigated." >> $GITHUB_STEP_SUMMARY
 
       - name: Upload benchmark results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: benchmark-results
           path: |
