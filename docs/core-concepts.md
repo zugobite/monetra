@@ -1,6 +1,6 @@
 # Core Concepts
 
-Understanding the fundamental principles behind Monetra will help you use it effectively and avoid common pitfalls when working with monetary values.
+Understanding Monetra's architectural principles and design decisions will help you leverage the framework effectively and build financially accurate applications.
 
 ---
 
@@ -12,6 +12,50 @@ Understanding the fundamental principles behind Monetra will help you use it eff
 - [Immutability](#immutability)
 - [Rounding Strategies](#rounding)
 - [Type Safety](#type-safety)
+- [Framework Architecture](#framework-architecture)
+
+---
+
+## Framework Architecture {#framework-architecture}
+
+Monetra is architected as a modular framework with distinct but integrated components:
+
+### Core Money Module
+The foundation that handles monetary values using integer arithmetic (BigInt). Includes the `Money` class, currency registry, custom token support, and allocation algorithms.
+
+**Key exports:** `Money`, `money()`, `Currency`, `defineToken()`
+
+### Financial Mathematics Module
+Pre-built financial calculations that work seamlessly with Money objects. All formulas are precision-tested and follow standard financial conventions.
+
+**Key exports:** `futureValue()`, `presentValue()`, `pmt()`, `loan()`, `npv()`, `irr()`, depreciation functions
+
+### Ledger Module
+Transaction tracking system with append-only design and cryptographic verification. Supports double-entry bookkeeping and async operations.
+
+**Key exports:** `Ledger`
+
+### Format & Parse Module
+Locale-aware formatting and parsing with customizable templates.
+
+**Key exports:** Built into `Money` class via `.format()` and `Money.parse()`
+
+### Converter Module
+Multi-currency operations with exchange rate management.
+
+**Key exports:** `Converter`, `MoneyBag`
+
+Each module can be imported from the main package or via subpath exports for optimal tree-shaking:
+
+```typescript
+// Main export (most common)
+import { money, futureValue, Ledger } from "monetra";
+
+// Subpath exports (optimal for tree-shaking)
+import { Ledger } from "monetra/ledger";
+import { loan, npv } from "monetra/financial";
+import { defineToken } from "monetra/tokens";
+```
 
 ---
 

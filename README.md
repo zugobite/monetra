@@ -1,13 +1,12 @@
-# Monetra
+![Monetra](./monetra.png)
 
-The Financial Integrity Framework for TypeScript.
+## Monetra
 
-### Security & Correctness
+**A comprehensive TypeScript framework for building financial applications with precision and confidence.**
 
 [![CI](https://github.com/zugobite/monetra/actions/workflows/ci.yml/badge.svg)](https://github.com/zugobite/monetra/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/zugobite/monetra/branch/main/graph/badge.svg)](https://codecov.io/gh/zugobite/monetra)
-[![Test Coverage](https://img.shields.io/badge/Coverage-97.76%25-brightgreen)](coverage/index.html)
-[![Mutation Score](https://img.shields.io/badge/Mutation_Score-89.16%25-green)](reports/mutation/mutation.html)
+[![Test Coverage](https://img.shields.io/badge/Coverage-99.87%25-brightgreen)](coverage/index.html)
+[![Mutation Score](https://img.shields.io/badge/Mutation_Score-92.09%25-brightgreen)](reports/mutation/mutation.html)
 [![Mathematically Verified](https://img.shields.io/badge/Verified-Property--Based_Tests-purple.svg)](tests/property-based.test.ts)
 [![Zero Dependencies](https://img.shields.io/badge/Dependencies-0-brightgreen.svg)]()
 
@@ -17,13 +16,15 @@ The Financial Integrity Framework for TypeScript.
 [![npm downloads](https://img.shields.io/npm/dm/monetra.svg)](https://www.npmjs.com/package/monetra)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
-[![Stability](https://img.shields.io/badge/stability-stable-green.svg)](https://github.com/zugobite/monetra)
+[![Stability](https://img.shields.io/badge/stability-stable-brightgreen.svg)](https://github.com/zugobite/monetra)
 
 ---
 
 ## Overview
 
-**Monetra is not just a money library.** It is a cohesive financial development framework designed for robust fintech applications.
+Monetra is a **zero-dependency TypeScript framework** that provides everything you need to build financially accurate applications. From precise money handling to transaction ledgers, from loan calculations to currency conversion—Monetra offers a complete, integrated solution.
+
+**Built for financial correctness:** By storing amounts in minor units (cents, satoshis, wei) as `BigInt`, Monetra eliminates floating-point precision errors that plague traditional approaches.
 
 While other libraries rely on floating-point math or simple wrappers, Monetra provides a full-stack architecture for the **lifecycle of value**: from safe storage and precise allocation to complex financial modeling and immutable audit logging.
 
@@ -76,19 +77,61 @@ pnpm add monetra
 
 ---
 
-## Why Choose Monetra?
+## Why Monetra?
 
-### Compliance by Default
+Monetra is more than a money library—it's a complete financial framework designed to handle the full spectrum of monetary operations in modern applications.
 
-Every design choice in Monetra favors correctness over convenience. We force explicit rounding modes, forbid unsafe float coercion, and strictly type all operation results.
+### Framework Capabilities
 
-### Mathematically Verified
+**🎯 Core Money Operations**
+- Integer-based storage (BigInt) eliminates floating-point errors
+- ISO 4217 currency support with automatic precision handling
+- Custom token definitions for cryptocurrencies (up to 18 decimals)
+- Explicit rounding strategies (6 modes: HALF_UP, HALF_DOWN, HALF_EVEN, FLOOR, CEIL, TRUNCATE)
+- Immutable API—all operations return new instances
 
-Monetra is battle-tested using **Property-Based Testing** (via `fast-check`). We don't just test `1 + 1 = 2`; we test thousands of random permutations to prove that our algebraic properties (associativity, commutativity, distributivity) hold true for _all_ inputs.
+**📊 Financial Mathematics**
+- Compound interest calculations with flexible compounding periods
+- Loan amortization schedules and payment calculations
+- Present/future value computations
+- Net Present Value (NPV) and Internal Rate of Return (IRR)
+- Depreciation methods (straight-line, declining balance)
+- Bond yield calculations and leverage metrics
 
-### Zero-Dependency Security
+**📒 Transaction Ledger System**
+- Append-only transaction log with hash chain verification
+- Double-entry bookkeeping support
+- Auditable history with cryptographic integrity
+- Account balance tracking and reconciliation
+- Async transaction processing with event handling
 
-Financial code is a high-risk target for supply chain attacks. Monetra has **zero dependencies**, significantly reducing your attack surface.
+**💱 Currency Management**
+- Multi-currency support with type-safe operations
+- Currency conversion with rate management
+- Historical exchange rate lookups
+- MoneyBag for aggregating different currencies
+- Mix-currency operation protection
+
+**🔧 Developer Experience**
+- Zero runtime dependencies—no supply chain risks
+- Full TypeScript support with strict types
+- Comprehensive error handling with custom error classes
+- Extensive test coverage (>95%) and mutation testing
+- Tree-shakeable modular exports
+- Framework integrations (React, Vue, Node.js)
+
+---
+
+## Use Cases
+
+Monetra is built for applications that require financial precision:
+
+- **E-commerce platforms** - Shopping carts, pricing, tax calculations
+- **Banking & FinTech** - Account management, transactions, interest calculations
+- **Accounting software** - Ledgers, reconciliation, financial reporting
+- **Cryptocurrency apps** - Wallet balances, token transfers, DeFi calculations
+- **SaaS billing** - Subscription management, invoicing, revenue recognition
+- **Investment platforms** - Portfolio tracking, return calculations, tax reporting
 
 ---
 
