@@ -1,29 +1,59 @@
 # Monetra
 
-A TypeScript library for handling monetary values with precision.
+The Financial Integrity Framework for TypeScript.
+
+### Security & Correctness
 
 [![CI](https://github.com/zugobite/monetra/actions/workflows/ci.yml/badge.svg)](https://github.com/zugobite/monetra/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/zugobite/monetra/branch/main/graph/badge.svg)](https://codecov.io/gh/zugobite/monetra)
+[![Mathematically Verified](https://img.shields.io/badge/Verified-Property--Based_Tests-purple.svg)](tests/property-based.test.ts)
+[![Mutation Score](https://img.shields.io/badge/Mutation_Score-Active-green)](https://stryker-mutator.io)
+[![Zero Dependencies](https://img.shields.io/badge/Dependencies-0-brightgreen.svg)]()
+
+### Package Information
+
 [![npm version](https://img.shields.io/npm/v/monetra.svg)](https://www.npmjs.com/package/monetra)
 [![npm downloads](https://img.shields.io/npm/dm/monetra.svg)](https://www.npmjs.com/package/monetra)
-[![codecov](https://codecov.io/gh/zugobite/monetra/branch/main/graph/badge.svg)](https://codecov.io/gh/zugobite/monetra)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
-[![Zero Dependencies](https://img.shields.io/badge/Dependencies-0-brightgreen.svg)]()
+[![Stability](https://img.shields.io/badge/stability-stable-green.svg)](https://github.com/zugobite/monetra)
 
 ---
 
 ## Overview
 
-Monetra is a zero-dependency TypeScript library that handles monetary values using integer arithmetic. By storing amounts in minor units (cents, satoshis, wei) as `BigInt`, it avoids the floating-point precision errors inherent in JavaScript's `number` type.
+**Monetra is not just a money library.** It is a cohesive financial development framework designed for robust fintech applications.
 
-```typescript
-// JavaScript floating-point issue
-0.1 + 0.2 === 0.3; // false (0.30000000000000004)
+While other libraries rely on floating-point math or simple wrappers, Monetra provides a full-stack architecture for the **lifecycle of value**: from safe storage and precise allocation to complex financial modeling and immutable audit logging.
 
-// Monetra
-import { money } from "monetra";
-money("0.10", "USD").add("0.20").equals(money("0.30", "USD")); // true
-```
+It bridges the gap between simple e-commerce math and complex ledger systems, offering a unified, type-safe environment for building:
+
+- **Neobanks & Digital Wallets**
+- **Billing & Invoicing Engines**
+- **Loan & Mortgage Calculators**
+- **Double-Entry Ledgers**
+
+### The Monetra Stack
+
+Monetra is architected in three distinct layers to ensure separation of concerns while maintaining type safety across your entire financial domain.
+
+#### Layer 1: The Core (Precision & Safety)
+
+- **`Money`**: Immutable, integer-based monetary value object using `BigInt` to prevent the [`0.1 + 0.2` problem](https://0.30000000000000004.com/).
+- **`Currency`**: ISO 4217 compliance out of the box, with support for custom tokens (crypto/loyalty points).
+- **`Allocation`**: GAAP-compliant splitting algorithms (Distribute value without losing cents).
+
+#### Layer 2: The Logic (Business Intelligence)
+
+- **`Financial`**: Standardized implementation of TVM (Time Value of Money) formulas like `PMT`, `NPV`, `IRR`, and `Loan Amortization`.
+- **`Interest`**: Exact calculation of Compound vs. Simple interest with day-count conventions.
+- **`Depreciation`**: Asset lifecycle management (Straight-line, Declining balance).
+
+#### Layer 3: The Audit (Compliance & Verification)
+
+- **`Ledger`**: Append-only, double-entry accounting system.
+- **`Verification`**: Cryptographic hashing of transaction chains to detect data tampering.
+- **`Enforcement`**: Strict rules for credit/debit operations to ensure books always balance.
 
 ---
 
@@ -45,142 +75,85 @@ pnpm add monetra
 
 ---
 
-## Features
+## Why Choose Monetra?
 
-- **Integer-based storage** - All values stored as `BigInt` in minor units
-- **Explicit rounding** - Six rounding modes (HALF_UP, HALF_DOWN, HALF_EVEN, FLOOR, CEIL, TRUNCATE)
-- **Currency support** - ISO 4217 currencies with automatic precision handling
-- **Custom tokens** - Define cryptocurrencies and tokens with up to 18 decimal places
-- **Allocation** - Split amounts without losing cents
-- **Financial calculations** - Compound interest, loan amortization, NPV, IRR
-- **Ledger** - Append-only transaction log with hash chain verification
-- **Currency conversion** - Rate management with historical lookups
-- **Multi-currency** - MoneyBag for aggregating different currencies
-- **Immutable** - All operations return new instances
-- **Type-safe** - Full TypeScript support with strict types
+### Compliance by Default
+
+Every design choice in Monetra favors correctness over convenience. We force explicit rounding modes, forbid unsafe float coercion, and strictly type all operation results.
+
+### Mathematically Verified
+
+Monetra is battle-tested using **Property-Based Testing** (via `fast-check`). We don't just test `1 + 1 = 2`; we test thousands of random permutations to prove that our algebraic properties (associativity, commutativity, distributivity) hold true for _all_ inputs.
+
+### Zero-Dependency Security
+
+Financial code is a high-risk target for supply chain attacks. Monetra has **zero dependencies**, significantly reducing your attack surface.
 
 ---
 
-## Quick Start
+## Quick Start: The Framework in Action
 
-### Basic Usage
+### 1. The Core: Safe Money Handling
+
+Stop worrying about floating-point errors.
 
 ```typescript
-import { money, Money, RoundingMode } from "monetra";
+import { money, Money } from "monetra";
 
-// Create money from string (major units)
+// Safe integer math
 const price = money("19.99", "USD");
+const tax = Money.fromMinor(199, "USD"); // 199 cents
+const total = price.add(tax);
 
-// Create from minor units (cents)
-const tax = Money.fromMinor(199, "USD");
-
-// Arithmetic
-const subtotal = price.add(tax);
-const total = subtotal.multiply(2);
-
-// Formatting
-console.log(total.format()); // "$43.96"
-console.log(total.format({ locale: "de-DE" })); // "43,96 $"
+console.log(total.format()); // "$21.98"
 ```
 
-### Allocation
+### 2. The Logic: Build a Loan Calculator
 
-Split money without losing cents:
-
-```typescript
-const bill = money("100.00", "USD");
-const shares = bill.split(3);
-// [money("33.34"), money("33.33"), money("33.33")]
-
-// Verify sum equals original
-shares.reduce((a, b) => a.add(b)).equals(bill); // true
-```
-
-### Rounding
-
-Operations that produce fractional minor units require explicit rounding:
+Implement complex financial products without external formulas.
 
 ```typescript
-const price = money("100.00", "USD");
+import { money, pmt, loan } from "monetra";
 
-// Division requires rounding mode
-const third = price.divide(3, { rounding: RoundingMode.HALF_UP });
-console.log(third.format()); // "$33.33"
-
-// Or use allocate for lossless division
-const parts = price.allocate([1, 1, 1]);
-// ["$33.34", "$33.33", "$33.33"]
-```
-
-### Custom Tokens
-
-Define cryptocurrencies or custom tokens:
-
-```typescript
-import { defineToken, money } from "monetra";
-
-const USDC = defineToken({
-  code: "USDC",
-  symbol: "USDC",
-  decimals: 6,
-  type: "crypto",
-});
-
-const balance = money("1000.50", USDC);
-console.log(balance.format()); // "1,000.50 USDC"
-```
-
-### Financial Calculations
-
-```typescript
-import { money, futureValue, pmt, loan, currentYield, straightLineDepreciation } from "monetra";
-
-// Depreciation
-const asset = straightLineDepreciation({
-  cost: money("10000", "USD"),
-  salvageValue: money("1000", "USD"),
-  usefulLife: 5
-});
-console.log(asset.annualDepreciation.format()); // "$1,800.00"
-
-// Bond Current Yield
-const coupon = money("50.00", "USD");
-const price = money("980.00", "USD");
-const yield = currentYield(coupon, price);
-console.log(`Yield: ${(yield * 100).toFixed(2)}%`); // "Yield: 5.10%"
-
-// Future value of investment
-const principal = money("10000", "USD");
-const future = futureValue(principal, {
-  rate: 0.07,
-  years: 10,
-  compoundingPerYear: 12,
-});
-console.log(future.format()); // "$20,096.61"
-
-// Monthly loan payment
+// Calculate monthly mortgage payment
 const payment = pmt({
-  principal: money("200000", "USD"),
-  annualRate: 0.065,
+  principal: money("250000", "USD"), // $250k Loan
+  annualRate: 0.055, // 5.5% APR
   years: 30,
 });
-console.log(payment.format()); // "$1,264.14"
+// result: "$1,419.47"
+
+// Generate the full amortization schedule
+const schedule = loan({
+  principal: money("250000", "USD"),
+  rate: 0.055,
+  periods: 360, // 30 years * 12 months
+});
+
+console.log(`Total Interest: ${schedule.totalInterest.format()}`);
 ```
 
-### Ledger
+### 3. The Audit: Immutable Ledger
 
-Track transactions with verification:
+Record the transaction and verify integrity.
 
 ```typescript
 import { Ledger, money } from "monetra";
 
-const ledger = new Ledger("USD");
+// Initialize a ledger for USD
+const bankLedger = new Ledger("USD");
 
-ledger.credit("account", money("1000.00", "USD"), "Deposit");
-ledger.debit("account", money("50.00", "USD"), "Purchase");
+// Record a transaction
+bankLedger.record({
+  description: "Mortgage Payment - Jan",
+  entries: [
+    { account: "user_wallet", credit: money("1419.47", "USD") },
+    { account: "bank_receivables", debit: money("1419.47", "USD") },
+  ],
+});
 
-console.log(ledger.getBalance("account").format()); // "$950.00"
-console.log(ledger.verify()); // true
+// Verify the cryptographic chain
+const isClean = bankLedger.verify(); // true
 ```
 
 ---
@@ -237,47 +210,32 @@ Full documentation is available in the [docs](docs/index.md) directory:
 
 **Getting Started**
 
-- [Installation & Setup](docs/getting-started.md)
 - [Core Concepts](docs/core-concepts.md)
+- [Installation & Setup](docs/getting-started.md)
 
-**API Reference**
+**The Framework API**
 
-- [Money](docs/api/money.md) - Core monetary value class
-- [Ledger](docs/api/ledger.md) - Transaction log with verification
-- [Financial](docs/api/financial.md) - Financial calculations
-- [Currency & Tokens](docs/api/currency.md) - Currency and token definitions
+- [Layer 1: Money & Currency](docs/core/money.md)
+- [Layer 2: Financial Math](docs/logic/financial.md)
+- [Layer 3: Ledger & Audit](docs/audit/ledger.md)
 
-**Guides**
+**Guides & Best Practices**
 
-- [Allocation & Splitting](docs/guides/allocation.md)
-- [Formatting & Parsing](docs/guides/formatting.md)
-- [Custom Tokens](docs/guides/custom-tokens.md)
-- [Error Handling](docs/guides/error-handling.md)
-
-**Framework Examples**
-
-- [React.js](docs/examples/react.md)
-- [Vue.js](docs/examples/vue.md)
-- [Node.js](docs/examples/node.md)
-
-**Reference**
-
-- [Best Practices](docs/best-practices.md)
-- [Library Comparison](docs/comparison.md)
+- [Precise Allocation (Splitting)](docs/guides/allocation.md)
+- [Handling Custom Tokens](docs/guides/custom-tokens.md)
+- [Error Handling Strategies](docs/guides/error-handling.md)
+- [Integration Examples (React, Vue, Node)](docs/examples/node.md)
 
 ---
 
-## Testing
+## Testing & Support
 
 ```bash
-# Run tests
+# Run the test suite
 pnpm test
 
-# Watch mode
-pnpm run test:watch
-
-# Coverage report
-pnpm run test:coverage
+# Run property-based verification
+pnpm test:property
 ```
 
 ---

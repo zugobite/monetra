@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { defineToken, ETH, BTC, USDC } from "../../src/tokens/defineToken";
+import { defineToken, ETH, BTC, USDC, USDT } from "../../src/tokens/defineToken";
 import { Money } from "../../src/money/Money";
 
 describe("Tokens - defineToken", () => {
@@ -32,5 +32,37 @@ describe("Tokens - defineToken", () => {
     const amount = Money.fromMajor("100.50", USDC);
     expect(amount.minor.toString()).toBe("100500000"); // 6 decimals
     expect(amount.format()).toBe("USDC100.500000");
+  });
+
+  it("should have valid definitions for default crypto tokens", () => {
+    // ETH
+    expect(ETH.code).toBe("ETH");
+    expect(ETH.symbol).toBe("Ξ");
+    expect(ETH.decimals).toBe(18);
+    expect(ETH.type).toBe("crypto");
+    // @ts-ignore
+    expect(ETH.chainId).toBe(1);
+    // @ts-ignore
+    expect(ETH.coingeckoId).toBe("ethereum");
+
+    // BTC
+    expect(BTC.code).toBe("BTC");
+    expect(BTC.symbol).toBe("₿");
+    expect(BTC.decimals).toBe(8);
+    // @ts-ignore
+    expect(BTC.coingeckoId).toBe("bitcoin");
+
+    // USDC
+    expect(USDC.code).toBe("USDC");
+    // @ts-ignore
+    expect(USDC.contractAddress).toBe("0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48");
+    // @ts-ignore
+    expect(USDC.standard).toBe("ERC-20");
+
+    // USDT
+    expect(USDT.code).toBe("USDT");
+    expect(USDT.symbol).toBe("₮");
+    // @ts-ignore
+    expect(USDT.contractAddress).toBe("0xdac17f958d2ee523a2206206994597c13d831ec7");
   });
 });

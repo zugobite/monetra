@@ -30,3 +30,11 @@ export function getCurrency(code: string): Currency {
 export function isCurrencyRegistered(code: string): boolean {
   return registry.has(code);
 }
+
+/**
+ * Returns all registered currencies as a map.
+ * @internal Use for testing only.
+ */
+export function getAllCurrencies(): Record<string, Currency> {
+  return Object.fromEntries(registry);
+}
