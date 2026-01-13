@@ -75,7 +75,7 @@
     "@stryker-mutator/core": "~9.4.0",
     "@stryker-mutator/vitest-runner": "~9.4.0",
     "@types/node": "^25.0.3",
-    "@vitest/coverage-v8": "4.0.16",
+    "@vitest/coverage-v8": "4.0.17",
     "fast-check": "^4.5.3",
     "prettier": "^3.0.0",
     "tsup": "^8.0.0",
