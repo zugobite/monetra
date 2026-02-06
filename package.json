@@ -1,7 +1,7 @@
 {
   "name": "monetra",
-  "version": "2.2.1",
-  "description": "A comprehensive TypeScript framework for financial applications—featuring integer-based money handling, multi-currency support, transaction ledgers, and advanced financial calculations. Built for correctness, auditability, and zero dependencies.",
+  "version": "2.3.0",
+  "description": "The TypeScript framework for fintech. Double-entry bookkeeping, precision money handling, financial calculations, and audit ledgers. Zero dependencies. Built for SMB fintech developers.",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",

@@ -213,5 +213,61 @@ describe("Financial - Simple Interest", () => {
       expect(interest.currency).toBe(principal.currency);
       expect(total.currency).toBe(principal.currency);
     });
+
+    it("simpleInterest returns exactly zero for zero rate (not computed)", () => {
+      const principal = Money.fromMajor("1000.00", USD);
+      const rate = Rate.zero();
+      const interest = simpleInterest(principal, { rate, years: 5 });
+      
+      // Must be exactly Money.zero, not computed
+      expect(interest.minor).toBe(0n);
+      expect(interest.isZero()).toBe(true);
+    });
+
+    it("simpleInterest returns exactly zero for zero years (not computed)", () => {
+      const principal = Money.fromMajor("1000.00", USD);
+      const rate = Rate.percent(10);
+      const interest = simpleInterest(principal, { rate, years: 0 });
+      
+      // Must be exactly Money.zero, not computed
+      expect(interest.minor).toBe(0n);
+      expect(interest.isZero()).toBe(true);
+    });
+
+    it("simpleInterestTotal returns exactly principal for zero rate (not computed)", () => {
+      const principal = Money.fromMajor("1000.00", USD);
+      const rate = Rate.zero();
+      const total = simpleInterestTotal(principal, { rate, years: 5 });
+      
+      // Must be exactly principal, not computed (1 + 0 = 1)
+      expect(total.minor).toBe(principal.minor);
+      expect(total).toBe(principal); // Same reference - early return
+    });
+
+    it("simpleInterestTotal returns exactly principal for zero years (not computed)", () => {
+      const principal = Money.fromMajor("1000.00", USD);
+      const rate = Rate.percent(10);
+      const total = simpleInterestTotal(principal, { rate, years: 0 });
+      
+      // Must be exactly principal, not computed (1 + rate * 0 = 1)
+      expect(total.minor).toBe(principal.minor);
+      expect(total).toBe(principal); // Same reference - early return
+    });
+
+    it("simpleInterest handles zero rate with non-integer years correctly", () => {
+      const principal = Money.fromMajor("1234.56", USD);
+      const rate = Rate.zero();
+      const interest = simpleInterest(principal, { rate, years: 2.5 });
+      
+      expect(interest.isZero()).toBe(true);
+    });
+
+    it("simpleInterestTotal handles zero years with fractional rate correctly", () => {
+      const principal = Money.fromMajor("9876.54", USD);
+      const rate = Rate.percent(7.5);
+      const total = simpleInterestTotal(principal, { rate, years: 0 });
+      
+      expect(total).toBe(principal); // Same reference
+    });
   });
 });
