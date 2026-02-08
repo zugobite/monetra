@@ -5,6 +5,68 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.0] - 2026-02-06
+
+### Added
+
+#### True Double-Entry Bookkeeping
+
+- **`DoubleEntryLedger`** - GAAP-compliant double-entry bookkeeping system
+  - Enforces balanced journal entries (total debits = total credits)
+  - Journal entry posting with multi-line support
+  - Entry voiding with automatic reversal entries
+  - Trial balance generation
+  - Account history with running balance
+  - SHA-256 hash chain verification
+  - Snapshot/restore for backup and audit
+
+- **`Account`** - Ledger account management
+  - 10 account types: asset, liability, equity, revenue, expense + contra accounts
+  - Automatic natural balance side handling (debit/credit normal)
+  - Balance sheet vs income statement classification
+  - Account hierarchies with parent/child relationships
+
+- **`JournalEntry`** - Immutable journal entries
+  - Multi-line debit/credit entries
+  - Metadata with references, tags, and custom fields
+  - Hash chain integrity for tamper detection
+
+- **`ChartOfAccountsTemplates`** - Ready-made templates
+  - `smallBusiness` - 30+ accounts for general SMB use
+  - `ecommerce` - Adds Stripe, PayPal clearing, shipping accounts
+  - `saas` - Adds deferred revenue, subscription accounts
+
+#### New Error Classes
+
+- **`UnbalancedEntryError`** - Thrown when journal entry debits ≠ credits
+- **`AccountNotFoundError`** - Thrown when referencing non-existent account
+- **`DuplicateAccountError`** - Thrown when creating duplicate account ID
+
+### Changed
+
+- Updated README with SMB fintech positioning
+- Added migration guide for Dinero.js users
+- Added SMB-focused examples (invoicing, payments, subscriptions, expenses)
+
+### Documentation
+
+- New: [Double-Entry Bookkeeping Guide](docs/audit/double-entry.md)
+- New: [Dinero.js Migration Guide](docs/guides/migration-dinero.md)
+- New: [SMB Fintech Examples](docs/examples/smb.md)
+- New: [Account API Reference](docs/core/account.md)
+- New: [DoubleEntryLedger API Reference](docs/core/double-entry-ledger.md)
+- New: [Journal Entry Types Reference](docs/core/journal-entry.md)
+- Updated: [Documentation Index](docs/index.md) with new API references
+
+### Testing
+
+- Improved test coverage to 99.41% statements, 99.89% lines
+- Enhanced mutation testing score to 86.23% (Stryker)
+- Added 358 total tests (22 new tests)
+- Improved `simple.ts` mutation score from 57.89% to 78.95%
+- Added comprehensive ChartOfAccountsTemplates validation tests
+- Added edge case tests for trial balance, account history, and snapshots
+
 ## [2.2.1] - 2026-01-07
 
 ### Changed

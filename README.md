@@ -2,7 +2,7 @@
 
 # Monetra
 
-A comprehensive TypeScript framework for building financial applications with precision and confidence.
+The TypeScript framework for fintech. Build production-ready financial applications with precision, auditability, and compliance built-in.
 
 [![CI](https://github.com/zugobite/monetra/actions/workflows/ci.yml/badge.svg)](https://github.com/zugobite/monetra/actions/workflows/ci.yml)
 [![Test Coverage](https://img.shields.io/badge/Coverage-99.87%25-brightgreen)](coverage/index.html)
@@ -17,6 +17,40 @@ A comprehensive TypeScript framework for building financial applications with pr
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
 [![Stability](https://img.shields.io/badge/stability-stable-brightgreen.svg)](https://github.com/zugobite/monetra)
+
+---
+
+## Why Fintech Teams Choose Monetra
+
+**🎯 Built for SMB Fintech** — Invoice systems, payment processing, expense tracking, and subscription billing with ready-to-use templates.
+
+**📊 True Double-Entry Bookkeeping** — GAAP-compliant ledger with journal entries, trial balance, and chart of accounts templates for SaaS, e-commerce, and small business.
+
+**🔐 Audit-Ready by Default** — SHA-256 hash chain verification on every transaction. Immutable entries with void/reversal patterns. Your auditors will thank you.
+
+**💰 BigInt Precision** — No floating-point surprises. Ever. Store values in minor units with up to 18 decimal places for crypto.
+
+**📦 Zero Dependencies** — No supply chain risks. No transitive vulnerabilities. Just TypeScript.
+
+```typescript
+import { DoubleEntryLedger, ChartOfAccountsTemplates, Money } from "monetra";
+
+// Set up GAAP-compliant books in 3 lines
+const ledger = new DoubleEntryLedger("USD");
+ledger.createAccounts(ChartOfAccountsTemplates.smallBusiness("USD"));
+
+// Record a sale with proper accounting
+ledger.post({
+  lines: [
+    { accountId: "cash", amount: Money.fromMajor("500", "USD"), type: "debit" },
+    { accountId: "sales-revenue", amount: Money.fromMajor("500", "USD"), type: "credit" },
+  ],
+  metadata: { description: "Invoice #1001", reference: "INV-1001" },
+});
+
+// Verify your books balance
+console.log(ledger.getTrialBalance().isBalanced); // true
+```
 
 ---
 
@@ -53,9 +87,11 @@ Monetra is architected in three distinct layers to ensure separation of concerns
 
 #### Layer 3: The Audit (Compliance & Verification)
 
-- **`Ledger`**: Append-only, double-entry accounting system.
+- **`Ledger`**: Simple append-only transaction log with hash chain verification.
+- **`DoubleEntryLedger`**: Full GAAP-compliant double-entry bookkeeping with accounts, journal entries, and trial balance.
+- **`Account`**: Asset, liability, equity, revenue, and expense accounts with natural balance sides.
+- **`ChartOfAccountsTemplates`**: Ready-made templates for small business, e-commerce, and SaaS.
 - **`Verification`**: Cryptographic hashing of transaction chains to detect data tampering.
-- **`Enforcement`**: Strict rules for credit/debit operations to ensure books always balance.
 
 ---
 
@@ -123,12 +159,19 @@ Monetra is more than a money library - it's a complete financial framework desig
 
 Monetra is built for applications that require financial precision:
 
-- **E-commerce platforms** - Shopping carts, pricing, tax calculations
-- **Banking & FinTech** - Account management, transactions, interest calculations
-- **Accounting software** - Ledgers, reconciliation, financial reporting
-- **Cryptocurrency apps** - Wallet balances, token transfers, DeFi calculations
-- **SaaS billing** - Subscription management, invoicing, revenue recognition
-- **Investment platforms** - Portfolio tracking, return calculations, tax reporting
+- **Invoice & Billing Systems** - Create, send, and track invoices with proper revenue recognition
+- **Payment Processing** - Stripe/PayPal integration with fee tracking and reconciliation
+- **Expense Management** - Employee expense reports with approval workflows
+- **Subscription Billing** - SaaS recurring payments with deferred revenue handling
+- **E-commerce Platforms** - Shopping carts, pricing, tax calculations, multi-currency
+- **Accounting Software** - Ledgers, reconciliation, trial balance, financial reporting
+- **Cryptocurrency Apps** - Wallet balances, token transfers, DeFi calculations (18 decimals)
+- **Banking & Neobanks** - Account management, transactions, interest calculations
+- **Investment Platforms** - Portfolio tracking, return calculations, tax reporting
+
+### Coming from Dinero.js?
+
+Check out our [Migration Guide](docs/guides/migration-dinero.md) for a smooth transition.
 
 ---
 
@@ -174,27 +217,41 @@ const schedule = loan({
 console.log(`Total Interest: ${schedule.totalInterest.format()}`);
 ```
 
-### 3. The Audit: Immutable Ledger
+### 3. The Audit: Double-Entry Bookkeeping
 
-Record the transaction and verify integrity.
+Real accounting with balanced entries.
 
 ```typescript
-import { Ledger, money } from "monetra";
+import { DoubleEntryLedger, ChartOfAccountsTemplates, Money } from "monetra";
 
-// Initialize a ledger for USD
-const bankLedger = new Ledger("USD");
+// Initialize with SMB chart of accounts
+const ledger = new DoubleEntryLedger("USD");
+ledger.createAccounts(ChartOfAccountsTemplates.smallBusiness("USD"));
 
-// Record a transaction
-bankLedger.record({
-  description: "Mortgage Payment - Jan",
-  entries: [
-    { account: "user_wallet", credit: money("1419.47", "USD") },
-    { account: "bank_receivables", debit: money("1419.47", "USD") },
+// Record a sale (debit AR, credit Revenue)
+ledger.post({
+  lines: [
+    { accountId: "accounts-receivable", amount: Money.fromMajor("1000", "USD"), type: "debit" },
+    { accountId: "sales-revenue", amount: Money.fromMajor("1000", "USD"), type: "credit" },
   ],
+  metadata: { description: "Invoice #1001", reference: "INV-1001" },
 });
 
-// Verify the cryptographic chain
-const isClean = bankLedger.verify(); // true
+// Receive payment (debit Cash, credit AR)
+ledger.post({
+  lines: [
+    { accountId: "cash", amount: Money.fromMajor("1000", "USD"), type: "debit" },
+    { accountId: "accounts-receivable", amount: Money.fromMajor("1000", "USD"), type: "credit" },
+  ],
+  metadata: { description: "Payment for INV-1001" },
+});
+
+// Generate trial balance
+const tb = ledger.getTrialBalance();
+console.log(`Balanced: ${tb.isBalanced}`); // true
+
+// Verify ledger integrity (SHA-256 hash chain)
+console.log(`Integrity: ${ledger.verify()}`); // true
 ```
 
 ---
@@ -212,14 +269,17 @@ Full documentation is available in the [docs](docs/index.md) directory:
 
 - [Layer 1: Money & Currency](docs/core/money.md)
 - [Layer 2: Financial Math](docs/logic/financial.md)
-- [Layer 3: Ledger & Audit](docs/audit/ledger.md)
+- [Layer 3: Double-Entry Ledger](docs/audit/double-entry.md)
+- [Layer 3: Simple Ledger](docs/audit/ledger.md)
 
 **Guides & Best Practices**
 
 - [Precise Allocation (Splitting)](docs/guides/allocation.md)
 - [Handling Custom Tokens](docs/guides/custom-tokens.md)
 - [Error Handling Strategies](docs/guides/error-handling.md)
-- [Integration Examples (React, Vue, Node)](docs/examples/node.md)
+- [Migrating from Dinero.js](docs/guides/migration-dinero.md)
+- [SMB Integration Examples](docs/examples/smb.md)
+- [Framework Examples (React, Vue, Node)](docs/examples/node.md)
 
 ---
 

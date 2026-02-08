@@ -14,6 +14,7 @@ Unlike simple money libraries that only handle basic arithmetic, Monetra is a co
 The foundation of the framework. It handles the low-level mechanics of safe value storage.
 - **[Money Object](core/money.md)**: Immutable, infinite-precision value handling.
 - **[Currency Registry](core/currency.md)**: ISO 4217 & Custom Token definitions.
+- **[Account](core/account.md)**: Ledger accounts with natural balance handling.
 - **Allocation**: Mathematically perfect splitting of funds.
 
 ### [Layer 2: Logic (Intelligence)](logic/financial.md)
@@ -25,6 +26,8 @@ The application layer that processes value. It implements standard financial for
 ### [Layer 3: Audit (Compliance)](audit/ledger.md)
 The persistence layer that ensures accountability.
 - **[Immutable Ledger](audit/ledger.md)**: Trusted Append-Only Logs.
+- **[Double-Entry Ledger](core/double-entry-ledger.md)**: GAAP-compliant bookkeeping.
+- **[Journal Entries](core/journal-entry.md)**: Balanced debit/credit entries.
 - **Verification**: Cryptographic Hashing (SHA-256) of transaction chains.
 - **Governance**: Strict Double-Entry constraints.
 
